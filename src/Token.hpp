@@ -9,9 +9,17 @@ namespace PiouC
         StartArg,
         EndArg,
         Extern,
+        StartContent,
+        EndContent,
+        EndInstr,
         Identifier,
-        Number,
+        Floating,
+        Integer,
+        String,
+        EntryPoint,
+        Comment,
         Unknown,
+        EndOfFile,
     };
 };
 

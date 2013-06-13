@@ -8,6 +8,9 @@ namespace PiouC
     enum class LexerExceptionType
     {
         InvalidCharacter,
+        UnexpectedSymbolAfterLiteral,
+        UnexpectedSymbolAfterNumber,
+        UnexpectedEOF,
         Unknown,
     };
 
