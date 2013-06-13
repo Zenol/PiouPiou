@@ -11,7 +11,7 @@ namespace PiouC
     bool
     is_num(int c)
     {
-        return (c > '0' && c < '9');
+        return (c >= '0' && c <= '9');
     }
 
     static
@@ -27,12 +27,14 @@ namespace PiouC
         :iss(iss)
     {}
 
+    Lexer::~Lexer()
+    {}
+
     Token
-    Lexer::check(int c, Token type)
+    Lexer::check(Token type)
     {
         if (!last_token_string.empty())
             throw LexerException(LexerExceptionType::UnexpectedSymbolAfterLiteral);
-        last_token_char = static_cast<char>(c);
         return type;
     }
 
@@ -41,7 +43,7 @@ namespace PiouC
     {
         if (!last_token_string.empty())
             throw LexerException(LexerExceptionType::UnexpectedSymbolAfterLiteral);
-        int c = iss.get();
+        c = iss.get();
         while (c != '"')
         {
             if (c == '\\')
@@ -49,27 +51,28 @@ namespace PiouC
             if (iss.gcount() == 0)
                 throw LexerException(LexerExceptionType::UnexpectedEOF);
             last_token_string.push_back(c);
+            c = iss.get();
         }
         return Token::String;
     }
 
     Token
-    Lexer::read_number(int c)
+    Lexer::read_number()
     {
-        std::string number;
         while (is_num(c))
         {
-            number.push_back(c);
+            last_token_string.push_back(c);
             c = iss.get();
         }
         if (is_blank(c))
             return convert_number(Token::Integer);
         if (c == '.')
         {
+            last_token_string.push_back('.');
             c = iss.get();
             while (c > '0' && c < '9')
             {
-                number.push_back(c);
+                last_token_string.push_back(c);
                 c = iss.get();
             }
         }
@@ -84,7 +87,7 @@ namespace PiouC
     {
         if (!last_token_string.empty())
             throw LexerException(LexerExceptionType::UnexpectedSymbolAfterLiteral);
-        int c = iss.get();
+        c = iss.get();
         while (c != '\n' && iss.gcount() != 0)
             c = iss.get();
         return Token::Comment;
@@ -97,14 +100,13 @@ namespace PiouC
         if (type == Token::Floating)
             last_token_float = atof(last_token_string.c_str());
         if (type == Token::Integer)
-            last_token_float = atoi(last_token_string.c_str());
+            last_token_int = atoi(last_token_string.c_str());
         return type;
     }
 
     Token
     Lexer::get_token()
     {
-        int c;
         Token type = Token::Unknown;
 
         //Remove first blanks
@@ -115,7 +117,6 @@ namespace PiouC
         last_token_string = "";
         last_token_int    = 0;
         last_token_float  = 0;
-        last_token_char   = 0;
 
         while (true)
         {
@@ -136,6 +137,18 @@ namespace PiouC
                     return Token::Define;
                 if (last_token_string == "Coq")
                     return Token::EntryPoint;
+                if (last_token_string == "Cot")
+                    return Token::If;
+                if (last_token_string == "cOt")
+                    return Token::Then;
+                if (last_token_string == "coT")
+                    return Token::Else;
+                if (last_token_string == "Glou")
+                    return Token::StringType;
+                if (last_token_string == "Kia")
+                    return Token::IntegerType;
+                if (last_token_string == "Pya")
+                    return Token::FloatingType;
                 return Token::Identifier;
             case '0':
             case '1':
@@ -147,9 +160,10 @@ namespace PiouC
             case '7':
             case '8':
             case '9':
-                return read_number(c);
+                return read_number();
             case 'p':
             case 'i':
+            case 'a':
             case 'o':
             case 'u':
             case 'k':
@@ -157,20 +171,50 @@ namespace PiouC
             case 't':
             case 'y':
             case 'w':
+            case 'c':
+            case 'g':
+            case 'l':
+            case 'P':
+            case 'I':
+            case 'A':
+            case 'O':
+            case 'U':
+            case 'K':
+            case 'Q':
+            case 'T':
+            case 'Y':
+            case 'W':
+            case 'C':
+            case 'G':
+            case 'L':
                 last_token_string.push_back(c);
                 break;
             case '<':
-                return check('<', Token::StartArg);
+                return check(Token::StartArg);
             case ';':
                 return read_comment();
             case '>':
-                return check('>', Token::EndArg);
+                return check(Token::EndArg);
             case '[':
-                return check('[', Token::StartContent);
+                return check(Token::StartContent);
             case ']':
-                return check(']', Token::EndContent);
+                return check(Token::EndContent);
             case ':':
-                return check(':', Token::EndInstr);
+                return check(Token::EndInstr);
+            case '~':
+                return check(Token::Affect);
+            case '+':
+                return check(Token::Plus);
+            case '-':
+                return check(Token::Minus);
+            case '*':
+                return check(Token::Mult);
+            case '/':
+                return check(Token::Div);
+            case '?':
+                return check(Token::Equal);
+            case '$':
+                return check(Token::Negate);
             default:
                 throw LexerException(LexerExceptionType::InvalidCharacter);
             }

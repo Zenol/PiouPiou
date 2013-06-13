@@ -21,21 +21,21 @@ namespace PiouC
     private:
         std::string input;
 
+        int         c;
         std::string last_token_string;
         int         last_token_int;
-        char        last_token_char;
         float       last_token_float;
 
         std::istream &iss;
 
         Token
-        check(int c, Token type);
+        check(Token type);
         Token
         read_string();
         Token
         read_comment();
         Token
-        read_number(int c);
+        read_number();
         Token
         convert_number(Token type);
     };

@@ -10,6 +10,12 @@ namespace PiouC
 
     template<>
     inline
+    float
+    Lexer::get_last_token_value() const
+    { return last_token_float; }
+
+    template<>
+    inline
     std::string
     Lexer::get_last_token_value() const
     { return last_token_string; }
@@ -18,5 +24,5 @@ namespace PiouC
     inline
     char
     Lexer::get_last_token_value() const
-    { return last_token_char; }
+    { return static_cast<char>(c); }
 }

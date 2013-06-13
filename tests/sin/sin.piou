@@ -1,0 +1,8 @@
+Kiu uoip "printf"     < Glou Pya > :
+Kiu ky   "sin"    Pya < Pya > :
+Piou Coq < >
+[
+  ;Calculate sin(0.5)
+  u ~ ky < 0.5 >
+  uoip "%s" u :
+]

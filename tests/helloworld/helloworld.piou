@@ -1,1 +1,5 @@
-Kiu printf < > : Piou Coq < > [ printf "Hello World" ]
+Kiu uoip "printf" < Glou > :
+Piou Coq < >
+[
+  uoip "Hello World":
+]
