@@ -31,5 +31,5 @@ set (EXECUTABLE_OUTPUT_PATH bin)
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp SRC)
 
 # Add executable :
-add_executable (server ${SOURCE_FILES})
+add_executable (piouc ${SOURCE_FILES})
 

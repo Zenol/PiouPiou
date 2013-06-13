@@ -3,6 +3,7 @@
 
 #include "Lexer.hpp"
 #include "LexerException.hpp"
+#include "AST.hpp"
 
 using namespace PiouC;
 
