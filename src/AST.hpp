@@ -1,6 +1,8 @@
 #ifndef AST_HPP_
 #define AST_HPP_
 
+#include <string>
+#include <vector>
 #include <memory>
 
 namespace PiouC
@@ -14,6 +16,8 @@ namespace PiouC
     public:
         virtual ~ExprAST() = 0;
     };
+
+    typedef std::shared_ptr<ExprAST> PExprAST;
 
 ///////////////////////
 // Node for literals //
@@ -52,7 +56,7 @@ namespace PiouC
     // Variable //
     //////////////
 
-    enum class VarType
+    enum class Type
     {
         Floating,
         String,
@@ -62,12 +66,12 @@ namespace PiouC
     class VariableEprAST : public ExprAST
     {
     public:
-        VariableEprAST(const std::string &name, VarType type)
+        VariableEprAST(const std::string &name, Type type)
             :name(name), type(type)
         {}
     private:
         std::string name;
-        VarType type;
+        Type type;
     };
 
     //////////////////////
@@ -80,17 +84,62 @@ namespace PiouC
         String,
         Integer,
     };
+
     class BinaryExprAST : public ExprAST
     {
     public:
-        BinaryExprAST(BinOp op, std::shared_ptr<ExprAST*> left, std::shared_ptr<ExprAST*> right)
+        BinaryExprAST(BinOp op, PExprAST left, PExprAST right)
             :op(op), left(left), right(right)
         {}
     private:
         BinOp op;
-        std::shared_ptr<ExprAST*> left;
-        std::shared_ptr<ExprAST*> right;
+        PExprAST left;
+        PExprAST right;
     };
+
+    ////////////////////////
+    // Call of a function //
+    ////////////////////////
+
+    class CallExprAST : public ExprAST
+    {
+    public:
+        CallExprAST(const std::string &name, const std::vector< PExprAST > &args)
+            :name(name), args(args)
+        {}
+    private:
+        std::string name;
+        std::vector<PExprAST> args;
+    };
+
+    //////////////////////////
+    // A function prototype //
+    //////////////////////////
+
+    class PrototypeAST : public ExprAST
+    {
+    public:
+        PrototypeAST(const std::string &name, const std::vector<Type> &args)
+            :name(name), args(args)
+        {}
+    private:
+        std::string name;
+        std::vector<Type> args;
+    };
+
+
+    class FunctionAST : public ExprAST
+    {
+    public:
+        FunctionAST(const std::string &name, const std::vector< std::pair<std::string, Type> > &args, PExprAST imp)
+            :name(name), args(args), imp(imp)
+        {}
+    private:
+        std::string name;
+        const std::vector< std::pair<std::string, Type> > args;
+        PExprAST imp;
+    };
+
 
 }
 
