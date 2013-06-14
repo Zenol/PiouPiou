@@ -6,4 +6,8 @@ namespace PiouC
     {
         return (current_tok = lex.get_token());
     }
+
+    inline
+    ExprAST::~ExprAST()
+    {}
 }
