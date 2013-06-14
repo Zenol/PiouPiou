@@ -36,6 +36,7 @@ namespace PiouC
         Negate,
         OpenParenthesis,
         CloseParenthesis,
+        ArgSep,
         EndOfFile,
     };
 

@@ -96,6 +96,9 @@ namespace PiouC
         case Token::CloseParenthesis:
             out << "CloseParenthesis";
             break;
+        case Token::ArgSep:
+            out << "ArgSep";
+            break;
         default:
             out << "??:" << static_cast<int>(token);
         }

@@ -13,9 +13,20 @@ namespace PiouC
         Parser(Lexer &lex);
         ~Parser();
     protected:
-        PExprAST ParseIntegerExpr() noexcept;
-        PExprAST ParseFloatExpr() noexcept;
-        PExprAST ParseStringExpr() noexcept;
+        //! Parse integer literal
+        PExprAST parse_integer_expr() noexcept;
+        //! Parse float literal
+        PExprAST parse_float_expr() noexcept;
+        //! Parse string literal
+        PExprAST parse_string_expr() noexcept;
+
+        //! Parse expression
+        PExprAST parse_expr();
+
+        //! Parse identifier and function call
+        PExprAST parse_identifier_expr();
+
+        PExprAST parse_parenth_expr();
     private:
         Lexer &lex;
 

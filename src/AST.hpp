@@ -63,10 +63,20 @@ namespace PiouC
         Integer,
     };
 
-    class VariableEprAST : public ExprAST
+    class VariableExprAST : public ExprAST
     {
     public:
-        VariableEprAST(const std::string &name, Type type)
+        VariableExprAST(const std::string &name)
+            :name(name)
+        {}
+    private:
+        std::string name;
+    };
+
+    class VariableDeclExprAST : public ExprAST
+    {
+    public:
+        VariableDeclExprAST(const std::string &name, Type type)
             :name(name), type(type)
         {}
     private:

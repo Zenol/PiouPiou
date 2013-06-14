@@ -195,6 +195,8 @@ namespace PiouC
                 return read_comment();
             case '>':
                 return check(Token::EndArg);
+            case ',':
+                return check(Token::ArgSep);
             case '[':
                 return check(Token::StartContent);
             case ']':
