@@ -12,6 +12,10 @@ namespace PiouC
     public:
         Parser(Lexer &lex);
         ~Parser();
+    protected:
+        PExprAST ParseIntegerExpr() noexcept;
+        PExprAST ParseFloatExpr() noexcept;
+        PExprAST ParseStringExpr() noexcept;
     private:
         Lexer &lex;
 

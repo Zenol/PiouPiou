@@ -14,7 +14,8 @@ namespace PiouC
     class ExprAST
     {
     public:
-        virtual ~ExprAST() = 0;
+        virtual ~ExprAST()
+        {};
     };
 
     typedef std::shared_ptr<ExprAST> PExprAST;
