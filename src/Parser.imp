@@ -1,0 +1,9 @@
+/* Parser's implementation */
+
+namespace PiouC
+{
+    Token Parser::get_next_token()
+    {
+        return (current_tok = lex.get_token());
+    }
+}

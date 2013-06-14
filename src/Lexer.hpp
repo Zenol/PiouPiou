@@ -13,11 +13,12 @@ namespace PiouC
         Lexer(std::istream &iss);
         ~Lexer();
 
-        Token get_token();
+        Token
+        get_token();
 
         template<class T>
-        inline
-        T get_last_token_value() const;
+        inline T
+        get_last_token_value() const;
     private:
         std::string input;
 
@@ -30,12 +31,16 @@ namespace PiouC
 
         Token
         check(Token type);
+
         Token
         read_string();
+
         Token
         read_comment();
+
         Token
         read_number();
+
         Token
         convert_number(Token type);
     };
