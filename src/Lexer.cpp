@@ -199,6 +199,10 @@ namespace PiouC
                 return check(Token::StartContent);
             case ']':
                 return check(Token::EndContent);
+            case '(':
+                return check(Token::OpenParenthesis);
+            case ')':
+                return check(Token::CloseParenthesis);
             case ':':
                 return check(Token::EndInstr);
             case '~':

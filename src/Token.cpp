@@ -90,6 +90,12 @@ namespace PiouC
         case Token::Negate:
             out << "Negate";
             break;
+        case Token::OpenParenthesis:
+            out << "OpenParenthesis";
+            break;
+        case Token::CloseParenthesis:
+            out << "CloseParenthesis";
+            break;
         default:
             out << "??:" << static_cast<int>(token);
         }

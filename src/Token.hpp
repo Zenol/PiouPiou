@@ -34,6 +34,8 @@ namespace PiouC
         IntegerType,
         Equal,
         Negate,
+        OpenParenthesis,
+        CloseParenthesis,
         EndOfFile,
     };
 
