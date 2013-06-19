@@ -32,6 +32,8 @@ namespace PiouC
             return "Expected a type (String, Integer, Floating)";
         case ParserExceptionType::ExpectedStartContent:
             return "Expected the begining of an an instruction block ('[')";
+        case ParserExceptionType::ExpectedTopLevel:
+            return "Expected a top level expression";
         default:
             return "Parser failed";
         }

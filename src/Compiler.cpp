@@ -3,42 +3,49 @@
 
 #include "Lexer.hpp"
 #include "LexerException.hpp"
+#include "Parser.hpp"
+#include "ParserException.hpp"
 #include "AST.hpp"
 
 using namespace PiouC;
 
+void lexer_state(const Lexer &lex)
+{
+    std::cout << "Lexer state : "
+              << "c:" << lex.get_last_token_value<char>()
+              << " | s:"
+              << lex.get_last_token_value<std::string>()
+              << " | i:"
+              << lex.get_last_token_value<int>()
+              << " | f:"
+              << lex.get_last_token_value<float>()
+              << std::endl;
+}
+
 int main(int argc, char *argv[])
 {
     Lexer lex(std::cin);
+    Parser parser(lex);
 
     try
     {
-        Token tok;
-        while ((tok = lex.get_token()) != Token::EndOfFile)
+        PExprAST expr;
+        while ((expr = parser.get_next_expression()))
         {
-            std::cout << tok
-                      << "\t <c:" << lex.get_last_token_value<char>()
-                      << " | s:"
-                      << lex.get_last_token_value<std::string>()
-                      << " | i:"
-                      << lex.get_last_token_value<int>()
-                      << " | f:"
-                      << lex.get_last_token_value<float>()
-                      << ">" << std::endl;
+            std::cout << "Expression :" << std::endl;
+            lexer_state(lex);
         }
     }
     catch (LexerException &e)
     {
-        std::cout << "Lexer failed : " << e.what()
-                  << "\nNear : "
-                  << "c:" << lex.get_last_token_value<char>()
-                  << " | s:"
-                  << lex.get_last_token_value<std::string>()
-                  << " | i:"
-                  << lex.get_last_token_value<int>()
-                  << " | f:"
-                  << lex.get_last_token_value<float>()
-                  << std::endl;
+        std::cout << "LexerException" << e.what() << std::endl;
+        lexer_state(lex);
+        return EXIT_FAILURE;
+    }
+    catch (ParserException &e)
+    {
+        std::cout << "Parser failed : " << e.what() << std::endl;
+        lexer_state(lex);
         return EXIT_FAILURE;
     }
 

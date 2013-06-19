@@ -12,6 +12,13 @@ namespace PiouC
     public:
         Parser(Lexer &lex);
         ~Parser();
+
+        //! Return the next top level expression
+        PExprAST get_next_expression();
+
+        //! Return the current token
+        Token get_current_token() const noexcept;
+
     protected:
         //! Parse integer literal
         PExprAST parse_integer_expr() noexcept;

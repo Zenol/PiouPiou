@@ -24,7 +24,11 @@ namespace PiouC
 
 
     Lexer::Lexer(std::istream &iss)
-        :iss(iss)
+        :input(""), c(0),
+         last_token_string(""),
+         last_token_int(0),
+         last_token_float(0.0f),
+         iss(iss)
     {}
 
     Lexer::~Lexer()

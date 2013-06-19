@@ -224,6 +224,41 @@ namespace PiouC
         }
     }
 
+    PExprAST
+    Parser::get_next_expression()
+    {
+        while (true)
+        {
+            //TODO Handle global variable
+
+            //Top level prototype
+            if (is_type(current_tok))
+                return parse_prototype();
+
+            switch(current_tok)
+            {
+            case Token::EndOfFile:
+                return PExprAST(nullptr);
+            case Token::EndInstr:
+                //Ignore top level end of instr
+                get_next_token();
+                break;
+            case Token::Define:
+                return parse_function();
+            case Token::Extern:
+                return parse_extern();
+            default:
+                throw ParserException(ParserExceptionType::ExpectedTopLevel);
+            }
+        }
+    }
+
+    Token
+    Parser::get_current_token() const noexcept
+    {
+        return current_tok;
+    }
+
     Type
     get_type(const Token tok)
     {

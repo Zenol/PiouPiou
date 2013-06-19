@@ -15,6 +15,7 @@ namespace PiouC
         ExpectedStartArg,
         ExpectedType,
         ExpectedStartContent,
+        ExpectedTopLevel,
         UnknowType,
     };
 
