@@ -1,10 +1,10 @@
 cmake_minimum_required (VERSION 2.6)
 
 # C++ 2011 flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -ggdb")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -std=c++0x")
 
 #C 99 flag
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -ggdb")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -std=c99")
 cmake_minimum_required (VERSION 2.6)
 
 # Project name.
