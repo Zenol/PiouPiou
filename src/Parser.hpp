@@ -15,8 +15,8 @@ namespace PiouC
     protected:
         //! Parse integer literal
         PExprAST parse_integer_expr() noexcept;
-        //! Parse float literal
-        PExprAST parse_float_expr() noexcept;
+        //! Parse floating number literal
+        PExprAST parse_floating_expr() noexcept;
         //! Parse string literal
         PExprAST parse_string_expr() noexcept;
 
@@ -26,7 +26,11 @@ namespace PiouC
         //! Parse identifier and function call
         PExprAST parse_identifier_expr();
 
+        //! Parse an expression enclosed by parentheses.
         PExprAST parse_parenth_expr();
+
+        //! Parse a primary expression (identifier, literals, parentheses)
+        PExprAST parse_primary();
     private:
         Lexer &lex;
 

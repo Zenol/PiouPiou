@@ -20,6 +20,8 @@ namespace PiouC
             return "Expected end of parenthesis (')')";
         case ParserExceptionType::ExpectedEndOfArg:
             return "Expected and of argument list or separator (',' or '>')";
+        case ParserExceptionType::ExpectedPrimaryExpr:
+            return "Expected a primary expression, but found an unexpected token";
         default:
             return "Parser failed";
         }

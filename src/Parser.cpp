@@ -20,7 +20,7 @@ namespace PiouC
     }
 
     PExprAST
-    Parser::parse_float_expr() noexcept
+    Parser::parse_floating_expr() noexcept
     {
         PExprAST node = PExprAST(new FloatingExprAST(lex.get_last_token_value<float>()));
         get_next_token(); // eat float
@@ -65,9 +65,29 @@ namespace PiouC
             if (current_tok != Token::ArgSep && current_tok != Token::EndArg)
                 throw ParserException(ParserExceptionType::ExpectedEndOfArg);
         }
-        get_next_token(); // eat ')'
+        get_next_token(); // eat '>'
 
         return PExprAST(new CallExprAST(identifier, args));
+    }
+
+    PExprAST
+    Parser::parse_primary()
+    {
+        switch(current_tok)
+        {
+        case Token::Identifier:
+            return parse_identifier_expr();
+        case Token::Integer:
+            return parse_integer_expr();
+        case Token::String:
+            return parse_string_expr();
+        case Token::Floating:
+            return parse_floating_expr();
+        case Token::OpenParenthesis:
+            return parse_parenth_expr();
+        default:
+            throw ParserException(ParserExceptionType::ExpectedPrimaryExpr);
+        }
     }
 
     PExprAST

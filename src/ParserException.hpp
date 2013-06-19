@@ -10,6 +10,7 @@ namespace PiouC
         ExpectedEndOfInstr,
         ExpectedEndOfParenth,
         ExpectedEndOfArg,
+        ExpectedPrimaryExpr,
     };
 
     class ParserException : public virtual Exception
