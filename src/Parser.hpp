@@ -32,6 +32,9 @@ namespace PiouC
         //! Parse a primary expression (identifier, literals, parentheses)
         PExprAST parse_primary();
 
+        //! Parse a prototype (Type identifier < (Type id?)* >)
+        PExprAST parse_prototype();
+
         //! Parse the right hand side of binary expression
         //! (For example, parse '+ b' in 'a + b')
         //!
@@ -53,6 +56,7 @@ namespace PiouC
         get_token_precedence();
     };
 
+    Type get_type(const Token tok);
 }
 
 #include "Parser.imp"

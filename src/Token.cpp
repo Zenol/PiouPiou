@@ -110,4 +110,18 @@ namespace PiouC
         }
         return out;
     }
+
+    bool
+    is_type(const Token tok)
+    {
+        switch(tok)
+        {
+        case Token::StringType:
+        case Token::FloatingType:
+        case Token::IntegerType:
+            return true;
+        default:
+            return false;
+        }
+    }
 }

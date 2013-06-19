@@ -42,6 +42,8 @@ namespace PiouC
         EndOfFile,
     };
 
+    bool is_type(const Token tok);
+
     std::ostream& operator<< (std::ostream &out, Token token);
 };
 

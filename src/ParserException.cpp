@@ -22,6 +22,14 @@ namespace PiouC
             return "Expected and of argument list or separator (',' or '>')";
         case ParserExceptionType::ExpectedPrimaryExpr:
             return "Expected a primary expression, but found an unexpected token";
+        case ParserExceptionType::UnknowType:
+            return "Tryed to convert a token to a variable type, but failed";
+        case ParserExceptionType::ExpectedIdentifier:
+            return "Expected an identifier while reading a prototype or variable declaration";
+        case ParserExceptionType::ExpectedStartArg:
+            return "Expected an start arg operator ('<')";
+        case ParserExceptionType::ExpectedType:
+            return "Expected a type (String, Integer, Floating)";
         default:
             return "Parser failed";
         }

@@ -122,14 +122,20 @@ namespace PiouC
     class PrototypeAST : public ExprAST
     {
     public:
-        PrototypeAST(const std::string &name, const std::vector<Type> &args)
-            :name(name), args(args)
+        PrototypeAST(Type return_type,
+                     const std::string &name,
+                     const std::vector<Type> &args)
+            :return_type(return_type), name(name), args(args)
         {}
     private:
+        Type return_type;
         std::string name;
         std::vector<Type> args;
     };
 
+    ///////////////////////////////
+    // A function implementation //
+    ///////////////////////////////
 
     class FunctionAST : public ExprAST
     {

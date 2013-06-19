@@ -7,10 +7,14 @@ namespace PiouC
 {
     enum class ParserExceptionType
     {
+        ExpectedIdentifier,
         ExpectedEndOfInstr,
         ExpectedEndOfParenth,
         ExpectedEndOfArg,
         ExpectedPrimaryExpr,
+        ExpectedStartArg,
+        ExpectedType,
+        UnknowType,
     };
 
     class ParserException : public virtual Exception

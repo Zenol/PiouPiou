@@ -127,6 +127,40 @@ namespace PiouC
         return parse_binop_rhs(0, lhs);
     }
 
+    PExprAST
+    Parser::parse_prototype()
+    {
+        Type return_type = get_type(current_tok);
+
+        get_next_token(); //eat type token
+
+        if (current_tok != Token::Identifier)
+            throw ParserException(ParserExceptionType::ExpectedIdentifier);
+
+        std::string name = lex.get_last_token_value<std::string>();
+        get_next_token(); //eat identifier
+
+        if (current_tok != Token::StartArg)
+            throw ParserException(ParserExceptionType::ExpectedStartArg);
+
+        //Read types of arguments
+        std::vector<Type> args;
+        while (current_tok != Token::EndArg)
+        {
+            if (!is_type(current_tok))
+                throw ParserException(ParserExceptionType::ExpectedType);
+
+            args.push_back(get_type(current_tok));
+
+            // We allow users to write a name after a type,
+            // althought it's not required.
+            if (current_tok == Token::Identifier)
+                get_next_token();
+        }
+
+        return PExprAST(new PrototypeAST(return_type, name, args));
+    }
+
     int
     Parser::get_token_precedence()
     {
@@ -147,11 +181,25 @@ namespace PiouC
             return 40;
         case Token::Equal:
             return 30;
-        case Token::Negate:
-            return 90;
         default:
             //If it's not a binop
             return -1;
+        }
+    }
+
+    Type
+    get_type(const Token tok)
+    {
+        switch(tok)
+        {
+        case Token::StringType:
+            return Type::String;
+        case Token::FloatingType:
+            return Type::Floating;
+        case Token::IntegerType:
+            return Type::Integer;
+        default:
+            throw ParserException(ParserExceptionType::UnknowType);
         }
     }
 }
