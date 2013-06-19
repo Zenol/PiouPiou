@@ -4,7 +4,13 @@ namespace PiouC
 {
     Token Parser::get_next_token()
     {
-        return (current_tok = lex.get_token());
+        do
+        {
+            current_tok = lex.get_token();
+        }
+        while (current_tok == Token::Unknown || current_tok == Token::Comment);
+
+        return current_tok;
     }
 
     inline

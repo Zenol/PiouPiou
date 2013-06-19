@@ -139,6 +139,24 @@ namespace PiouC
 
     typedef std::shared_ptr<PrototypeAST> PPrototypeAST;
 
+
+    ///////////////////////////
+    // An extern declaration //
+    ///////////////////////////
+
+    class ExternAST : public ExprAST
+    {
+    public:
+        ExternAST(std::string extern_name, PPrototypeAST prototype)
+            :extern_name(extern_name), prototype(prototype)
+        {}
+    private:
+        std::string extern_name;
+        PPrototypeAST prototype;
+    };
+
+    typedef std::shared_ptr<PrototypeAST> PPrototypeAST;
+
     ///////////////////////////////
     // A function implementation //
     ///////////////////////////////

@@ -1,8 +1,14 @@
-Kiu uoip "printf"     < Glou Pya > :
-Kiu ky   "sin"    Pya < Pya > :
-Piou Coq < >
+Kiu "printf" Kia uoip < Glou Pya > :
+Kiu "sin"    Pya ky   < Pya >      :
+Piou Kia Coq < >
 [
-  ;Calculate sin(0.5)
+  ; Tells that u and v exists
+  Pya u :
+  Kia v :
+  ; Calculate sin(0.5)
   u ~ ky < 0.5 >
+  ; Do some useless math
+  v ~ 2 * 5 + 4 + 3 * ( 2 + 7 )
   uoip "%s" u :
+  0 :
 ]

@@ -1,12 +1,15 @@
 #include "Parser.hpp"
 #include "ParserException.hpp"
-
+#include <iostream>
 namespace PiouC
 {
 
     Parser::Parser(Lexer &lex)
         :lex(lex), current_tok(Token::Unknown)
-    {}
+    {
+        //Read the first token
+        get_next_token();
+    }
 
     Parser::~Parser()
     {}
@@ -132,16 +135,26 @@ namespace PiouC
     {
         Type return_type = get_type(current_tok);
 
-        get_next_token(); //eat type token
+        get_next_token(); // eat type token
 
-        if (current_tok != Token::Identifier)
+        std::string name;
+        //We should read identifier or entry point token
+        if (current_tok == Token::Identifier)
+        {
+            name = lex.get_last_token_value<std::string>();
+            get_next_token(); // eat identifier
+        }
+        else if (current_tok == Token::EntryPoint)
+        {
+            name = "Coq";
+            get_next_token(); // eat identifier
+        }
+        else
             throw ParserException(ParserExceptionType::ExpectedIdentifier);
-
-        std::string name = lex.get_last_token_value<std::string>();
-        get_next_token(); //eat identifier
 
         if (current_tok != Token::StartArg)
             throw ParserException(ParserExceptionType::ExpectedStartArg);
+        get_next_token(); // eat '<'
 
         //Read types of arguments
         ArgList args;
@@ -151,6 +164,7 @@ namespace PiouC
                 throw ParserException(ParserExceptionType::ExpectedType);
 
             Type arg_type = get_type(current_tok);
+            get_next_token(); // eat type
 
             // Users are allowed to do not specify a name
             std::string arg_name;
@@ -162,6 +176,7 @@ namespace PiouC
 
             args.push_back(ArgPair(arg_type, arg_name));
         }
+        get_next_token(); // eat '>'
 
         return PPrototypeAST(new PrototypeAST(return_type, name, args));
     }
@@ -169,19 +184,34 @@ namespace PiouC
     PExprAST
     Parser::parse_extern()
     {
-        get_next_token(); //eat extern identifier
-        return parse_prototype();
+        get_next_token(); // eat extern identifier
+
+        if (current_tok != Token::String)
+            throw ParserException(ParserExceptionType::ExpectedExternName);
+
+        std::string extern_name = lex.get_last_token_value<std::string>();
+        get_next_token(); // eat string
+
+        //Read prototype
+        PPrototypeAST prototype = parse_prototype();
+
+        if (current_tok != Token::EndInstr)
+            throw ParserException(ParserExceptionType::ExpectedEndOfInstr);
+        get_next_token(); // eat ':'
+
+        return PExprAST(new ExternAST(extern_name, prototype));
     }
 
     PExprAST
     Parser::parse_function()
     {
-        get_next_token(); //eat the Define token
+        get_next_token(); // eat the Define token
 
         PPrototypeAST prototype = parse_prototype();
 
         if (current_tok != Token::StartContent)
             throw ParserException(ParserExceptionType::ExpectedStartContent);
+        get_next_token(); // eat '['
 
         InstList imp;
         while (current_tok != Token::EndContent)
@@ -190,10 +220,11 @@ namespace PiouC
 
             if (current_tok != Token::EndInstr)
                 throw ParserException(ParserExceptionType::ExpectedEndOfInstr);
+            get_next_token(); // eat ':'
 
             imp.push_back(inst);
         }
-        get_next_token();//eat ']'
+        get_next_token(); // eat ']'
 
         return PExprAST(new FunctionAST(prototype, imp));
     }
@@ -241,6 +272,7 @@ namespace PiouC
                 return PExprAST(nullptr);
             case Token::EndInstr:
                 //Ignore top level end of instr
+                //And top level comments
                 get_next_token();
                 break;
             case Token::Define:

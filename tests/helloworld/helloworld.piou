@@ -1,5 +1,6 @@
-Kiu uoip "printf" < Glou > :
-Piou Coq < >
+Kiu "printf" Kia uoip < Glou > :
+Piou Kia Coq < >
 [
-  uoip "Hello World":
+  uoip < "Hello World" > :
+  0 :
 ]

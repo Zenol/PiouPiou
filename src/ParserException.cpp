@@ -34,6 +34,8 @@ namespace PiouC
             return "Expected the begining of an an instruction block ('[')";
         case ParserExceptionType::ExpectedTopLevel:
             return "Expected a top level expression";
+        case ParserExceptionType::ExpectedExternName:
+            return "Expected an extern name (a string)";
         default:
             return "Parser failed";
         }

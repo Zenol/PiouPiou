@@ -22,6 +22,13 @@ void lexer_state(const Lexer &lex)
               << std::endl;
 }
 
+void parser_state(const Parser &parser)
+{
+    std::cout << "Parser state :"
+              << parser.get_current_token()
+              << std::endl;
+}
+
 int main(int argc, char *argv[])
 {
     Lexer lex(std::cin);
@@ -46,6 +53,7 @@ int main(int argc, char *argv[])
     {
         std::cout << "Parser failed : " << e.what() << std::endl;
         lexer_state(lex);
+        parser_state(parser);
         return EXIT_FAILURE;
     }
 

@@ -10,6 +10,7 @@ namespace PiouC
     class Parser
     {
     public:
+        //! Construct a parser and read the first token
         Parser(Lexer &lex);
         ~Parser();
 
