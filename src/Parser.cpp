@@ -91,15 +91,46 @@ namespace PiouC
     }
 
     PExprAST
+    Parser::parse_binop_rhs(int precedence_min, PExprAST lhs)
+    {
+        // We will try to read operators and replace the
+        // current lhs by a bigger one, until there is
+        // no more tokens.
+        while (true)
+        {
+            int token_precedence = get_token_precedence();
+
+            // If it's not a binop or it's a binop with
+            // lower precedence.
+            if (token_precedence < precedence_min)
+                return lhs;
+
+            //We know it's a binop, so we read [op, prim]
+            Token binop = current_tok;
+            PExprAST rhs = parse_primary();
+
+            // If the next token have a stronger precedence,
+            // we should compute it as belonging to rhs.
+            int next_precedence = get_token_precedence();
+            if (next_precedence > token_precedence)
+                rhs = PExprAST(parse_binop_rhs(token_precedence + 1, rhs));
+
+            //Otherwise, we replace the lhs by 'lhs, op, prim'
+            lhs = PExprAST(new BinaryExprAST(binop, lhs, rhs));
+        }
+    }
+
+    PExprAST
     Parser::parse_expr()
     {
-        return nullptr;
+        PExprAST lhs = parse_primary();
+        return parse_binop_rhs(0, lhs);
     }
 
     int
     Parser::get_token_precedence()
     {
-        //Return the precedence of the current tokkent
+        //Return the precedence of the current tokent
         switch(current_tok)
         {
         case Token::Mult:

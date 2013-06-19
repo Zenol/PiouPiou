@@ -88,21 +88,14 @@ namespace PiouC
     // Binary operation //
     //////////////////////
 
-    enum class BinOp
-    {
-        Floating,
-        String,
-        Integer,
-    };
-
     class BinaryExprAST : public ExprAST
     {
     public:
-        BinaryExprAST(BinOp op, PExprAST left, PExprAST right)
+        BinaryExprAST(Token op, PExprAST left, PExprAST right)
             :op(op), left(left), right(right)
         {}
     private:
-        BinOp op;
+        Token op;
         PExprAST left;
         PExprAST right;
     };

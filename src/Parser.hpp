@@ -31,6 +31,16 @@ namespace PiouC
 
         //! Parse a primary expression (identifier, literals, parentheses)
         PExprAST parse_primary();
+
+        //! Parse the right hand side of binary expression
+        //! (For example, parse '+ b' in 'a + b')
+        //!
+        //! \param precedence_min Minimal precedence that should have the
+        //!        operator in the rhs to be accepted. (0 means all
+        //!        binary operators).
+        //! \param lhs The left hand side expression. In the example above,
+        //!            it's 'a'.
+        PExprAST parse_binop_rhs(int precedence_min, PExprAST lhs);
     private:
         Lexer &lex;
 
