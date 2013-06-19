@@ -108,5 +108,6 @@ namespace PiouC
         default:
             out << "??:" << static_cast<int>(token);
         }
+        return out;
     }
 }

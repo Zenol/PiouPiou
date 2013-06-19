@@ -110,6 +110,10 @@ namespace PiouC
             return 60;
         case Token::Minus:
             return 60;
+        case Token::Lt:
+            return 40;
+        case Token::Gt:
+            return 40;
         case Token::Equal:
             return 30;
         case Token::Negate:
