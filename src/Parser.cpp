@@ -41,7 +41,7 @@ namespace PiouC
         get_next_token(); // eat '('
         PExprAST node = parse_expr();
         if (current_tok != Token::CloseParenthesis)
-            throw ParserException(ParserExceptionType::ExpectedEndOfInstr);
+            throw ParserException(ParserExceptionType::ExpectedEndOfParenth);
         get_next_token(); // eat ')'
         return node;
     }
@@ -127,7 +127,7 @@ namespace PiouC
         return parse_binop_rhs(0, lhs);
     }
 
-    PExprAST
+    PPrototypeAST
     Parser::parse_prototype()
     {
         Type return_type = get_type(current_tok);
@@ -144,21 +144,58 @@ namespace PiouC
             throw ParserException(ParserExceptionType::ExpectedStartArg);
 
         //Read types of arguments
-        std::vector<Type> args;
+        ArgList args;
         while (current_tok != Token::EndArg)
         {
             if (!is_type(current_tok))
                 throw ParserException(ParserExceptionType::ExpectedType);
 
-            args.push_back(get_type(current_tok));
+            Type arg_type = get_type(current_tok);
 
-            // We allow users to write a name after a type,
-            // althought it's not required.
+            // Users are allowed to do not specify a name
+            std::string arg_name;
             if (current_tok == Token::Identifier)
+            {
+                name = lex.get_last_token_value<std::string>();
                 get_next_token();
+            }
+
+            args.push_back(ArgPair(arg_type, arg_name));
         }
 
-        return PExprAST(new PrototypeAST(return_type, name, args));
+        return PPrototypeAST(new PrototypeAST(return_type, name, args));
+    }
+
+    PExprAST
+    Parser::parse_extern()
+    {
+        get_next_token(); //eat extern identifier
+        return parse_prototype();
+    }
+
+    PExprAST
+    Parser::parse_function()
+    {
+        get_next_token(); //eat the Define token
+
+        PPrototypeAST prototype = parse_prototype();
+
+        if (current_tok != Token::StartContent)
+            throw ParserException(ParserExceptionType::ExpectedStartContent);
+
+        InstList imp;
+        while (current_tok != Token::EndContent)
+        {
+            PExprAST inst = parse_expr();
+
+            if (current_tok != Token::EndInstr)
+                throw ParserException(ParserExceptionType::ExpectedEndOfInstr);
+
+            imp.push_back(inst);
+        }
+        get_next_token();//eat ']'
+
+        return PExprAST(new FunctionAST(prototype, imp));
     }
 
     int

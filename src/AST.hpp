@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <memory>
 
 namespace PiouC
@@ -119,34 +120,40 @@ namespace PiouC
     // A function prototype //
     //////////////////////////
 
+    typedef std::pair<Type, std::string> ArgPair;
+    typedef std::vector< ArgPair > ArgList;
+
     class PrototypeAST : public ExprAST
     {
     public:
         PrototypeAST(Type return_type,
                      const std::string &name,
-                     const std::vector<Type> &args)
+                     const ArgList &args)
             :return_type(return_type), name(name), args(args)
         {}
     private:
         Type return_type;
         std::string name;
-        std::vector<Type> args;
+        ArgList args;
     };
+
+    typedef std::shared_ptr<PrototypeAST> PPrototypeAST;
 
     ///////////////////////////////
     // A function implementation //
     ///////////////////////////////
 
+    typedef std::list<PExprAST> InstList;
+
     class FunctionAST : public ExprAST
     {
     public:
-        FunctionAST(const std::string &name, const std::vector< std::pair<std::string, Type> > &args, PExprAST imp)
-            :name(name), args(args), imp(imp)
+        FunctionAST(PPrototypeAST prototype, InstList imp)
+            :prototype(prototype), imp(imp)
         {}
     private:
-        std::string name;
-        const std::vector< std::pair<std::string, Type> > args;
-        PExprAST imp;
+        PPrototypeAST prototype;
+        InstList imp;
     };
 
 

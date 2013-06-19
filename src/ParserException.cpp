@@ -30,6 +30,8 @@ namespace PiouC
             return "Expected an start arg operator ('<')";
         case ParserExceptionType::ExpectedType:
             return "Expected a type (String, Integer, Floating)";
+        case ParserExceptionType::ExpectedStartContent:
+            return "Expected the begining of an an instruction block ('[')";
         default:
             return "Parser failed";
         }

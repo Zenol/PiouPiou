@@ -33,7 +33,13 @@ namespace PiouC
         PExprAST parse_primary();
 
         //! Parse a prototype (Type identifier < (Type id?)* >)
-        PExprAST parse_prototype();
+        PPrototypeAST parse_prototype();
+
+        //! Parse an extern declaration (extern prototype)
+        PExprAST parse_extern();
+
+        //! Parse a function implementation
+        PExprAST parse_function();
 
         //! Parse the right hand side of binary expression
         //! (For example, parse '+ b' in 'a + b')
