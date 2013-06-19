@@ -11,7 +11,6 @@ namespace PiouC
         ExpectedEndOfParenth,
         ExpectedEndOfArg,
         ExpectedPrimaryExpr,
-        BinOpWithoutPrecedence,
     };
 
     class ParserException : public virtual Exception

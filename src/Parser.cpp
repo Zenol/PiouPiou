@@ -119,7 +119,8 @@ namespace PiouC
         case Token::Negate:
             return 90;
         default:
-            throw ParserException(ParserExceptionType::BinOpWithoutPrecedence);
+            //If it's not a binop
+            return -1;
         }
     }
 }
