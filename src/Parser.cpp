@@ -62,12 +62,19 @@ namespace PiouC
         //It's a function call :
         get_next_token(); // eat '<'
         std::vector<PExprAST> args;
-        while (current_tok != Token::EndArg)
-        {
-            PExprAST expr = parse_expr();
-            if (current_tok != Token::ArgSep && current_tok != Token::EndArg)
-                throw ParserException(ParserExceptionType::ExpectedEndOfArg);
-        }
+
+        if (current_tok != Token::EndArg)
+            while (true)
+            {
+                PExprAST expr = parse_expr();
+
+                if (current_tok == Token::EndArg)
+                    break;
+
+                if (current_tok != Token::ArgSep)
+                    throw ParserException(ParserExceptionType::ExpectedEndOfArg);
+                get_next_token(); // eat ','
+            }
         get_next_token(); // eat '>'
 
         return PExprAST(new CallExprAST(identifier, args));
@@ -110,6 +117,7 @@ namespace PiouC
 
             //We know it's a binop, so we read [op, prim]
             Token binop = current_tok;
+            get_next_token(); // eat the binop
             PExprAST rhs = parse_primary();
 
             // If the next token have a stronger precedence,
@@ -158,23 +166,32 @@ namespace PiouC
 
         //Read types of arguments
         ArgList args;
-        while (current_tok != Token::EndArg)
-        {
-            if (!is_type(current_tok))
-                throw ParserException(ParserExceptionType::ExpectedType);
-
-            Type arg_type = get_type(current_tok);
-            get_next_token(); // eat type
-
-            // Users are allowed to do not specify a name
-            std::string arg_name;
-            if (current_tok == Token::Identifier)
+        if (current_tok != Token::EndArg)
+            while (true)
             {
-                name = lex.get_last_token_value<std::string>();
-                get_next_token();
-            }
+                if (!is_type(current_tok))
+                    throw ParserException(ParserExceptionType::ExpectedType);
 
-            args.push_back(ArgPair(arg_type, arg_name));
+                Type arg_type = get_type(current_tok);
+                get_next_token(); // eat type
+
+                // Users are allowed to do not specify a name
+                std::string arg_name;
+                if (current_tok == Token::Identifier)
+                {
+                    name = lex.get_last_token_value<std::string>();
+                    get_next_token();
+                }
+
+                args.push_back(ArgPair(arg_type, arg_name));
+
+                if (current_tok == Token::EndArg)
+                    break;
+
+                if (current_tok != Token::ArgSep)
+                    throw ParserException(ParserExceptionType::ExpectedEndOfArg);
+
+                get_next_token(); //eat separator ','
         }
         get_next_token(); // eat '>'
 
@@ -249,6 +266,8 @@ namespace PiouC
             return 40;
         case Token::Equal:
             return 30;
+        case Token::Affect:
+            return 20;
         default:
             //If it's not a binop
             return -1;

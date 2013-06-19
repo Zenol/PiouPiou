@@ -24,7 +24,7 @@ void lexer_state(const Lexer &lex)
 
 void parser_state(const Parser &parser)
 {
-    std::cout << "Parser state :"
+    std::cout << "Parser state : "
               << parser.get_current_token()
               << std::endl;
 }
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     }
     catch (LexerException &e)
     {
-        std::cout << "LexerException" << e.what() << std::endl;
+        std::cout << "Lexer failed : " << e.what() << std::endl;
         lexer_state(lex);
         return EXIT_FAILURE;
     }
