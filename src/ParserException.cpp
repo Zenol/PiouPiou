@@ -22,6 +22,8 @@ namespace PiouC
             return "Expected and of argument list or separator (',' or '>')";
         case ParserExceptionType::ExpectedPrimaryExpr:
             return "Expected a primary expression, but found an unexpected token";
+        case ParserExceptionType::BinOpWithoutPrecedence:
+            return "A binary operator has no specified precedence";
         default:
             return "Parser failed";
         }

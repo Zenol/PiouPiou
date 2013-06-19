@@ -28,6 +28,8 @@ namespace PiouC
         Minus,
         Mult,
         Div,
+        Lt,
+        Gt,
         Affect,
         StringType,
         FloatingType,

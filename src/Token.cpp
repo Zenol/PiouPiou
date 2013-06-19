@@ -72,6 +72,12 @@ namespace PiouC
         case Token::Div:
             out << "Div";
             break;
+        case Token::Lt:
+            out << "Lt";
+            break;
+        case Token::Gt:
+            out << "Gt";
+            break;
         case Token::Affect:
             out << "Affect";
             break;

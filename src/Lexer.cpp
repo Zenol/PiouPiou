@@ -107,8 +107,6 @@ namespace PiouC
     Token
     Lexer::get_token()
     {
-        Token type = Token::Unknown;
-
         //Remove first blanks
         c = iss.get();
         while (is_blank(c))
@@ -217,6 +215,10 @@ namespace PiouC
                 return check(Token::Mult);
             case '/':
                 return check(Token::Div);
+            case '{':
+                return check(Token::Lt);
+            case '}':
+                return check(Token::Gt);
             case '?':
                 return check(Token::Equal);
             case '$':
@@ -226,5 +228,7 @@ namespace PiouC
             }
             c = iss.get();
         }
+
+        return Token::Unknown;
     }
 };

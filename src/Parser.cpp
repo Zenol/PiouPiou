@@ -96,4 +96,26 @@ namespace PiouC
         return nullptr;
     }
 
+    int
+    Parser::get_token_precedence()
+    {
+        //Return the precedence of the current tokkent
+        switch(current_tok)
+        {
+        case Token::Mult:
+            return 80;
+        case Token::Div:
+            return 70;
+        case Token::Plus:
+            return 60;
+        case Token::Minus:
+            return 60;
+        case Token::Equal:
+            return 30;
+        case Token::Negate:
+            return 90;
+        default:
+            throw ParserException(ParserExceptionType::BinOpWithoutPrecedence);
+        }
+    }
 }

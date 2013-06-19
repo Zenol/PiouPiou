@@ -38,6 +38,9 @@ namespace PiouC
 
         inline Token
         get_next_token();
+
+        int
+        get_token_precedence();
     };
 
 }
