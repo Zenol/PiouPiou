@@ -9,16 +9,34 @@
 
 using namespace PiouC;
 
-void lexer_state(const Lexer &lex)
+void lexer_state(const Lexer &lex) noexcept
 {
-    std::cout << "Lexer state : "
-              << "c:" << lex.get_last_token_value<char>()
-              << " | s:"
+    std::string consumed_line = lex.get_consumed_line();
+    std::cout << "The lexer was reading the line "
+              << lex.get_current_line()
+              << " at column number "
+              << consumed_line.length()
+              << ":"
+              << std::endl;
+    std::cout << "    "
+              << consumed_line
+              << std::endl;
+    std::cout.width(consumed_line.length() + 4);
+    std::cout.fill(' ');
+    std::cout << "^"
+              << std::endl;
+    std::cout << "The internal state was "
+              << "<string value: "
               << lex.get_last_token_value<std::string>()
-              << " | i:"
+              << ", integer value: "
               << lex.get_last_token_value<int>()
-              << " | f:"
+              << ", floating value: "
               << lex.get_last_token_value<float>()
+              << ">"
+              << std::endl;
+    std::cout << "The last character read was "
+              << "'" << lex.get_last_token_value<char>() << "'"
+              << "."
               << std::endl;
 }
 

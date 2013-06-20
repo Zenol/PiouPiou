@@ -63,6 +63,8 @@ namespace PiouC
 
         Token current_tok;
 
+        bool first_read;
+
         inline Token
         get_next_token();
 

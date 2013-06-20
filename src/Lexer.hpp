@@ -18,8 +18,16 @@ namespace PiouC
 
         template<class T>
         inline T
-        get_last_token_value() const;
+        get_last_token_value() const noexcept;
+
+        inline int
+        get_current_line() const noexcept;
+
+        inline std::string
+        get_consumed_line() const noexcept;
     private:
+        int line_number;
+        std::string consumed_line;
         std::string input;
 
         int         c;
@@ -43,6 +51,9 @@ namespace PiouC
 
         Token
         convert_number(Token type);
+
+        inline int
+        get_char();
     };
 
 }

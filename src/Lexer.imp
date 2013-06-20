@@ -5,24 +5,34 @@ namespace PiouC
     template<>
     inline
     int
-    Lexer::get_last_token_value() const
+    Lexer::get_last_token_value() const noexcept
     { return last_token_int; }
 
     template<>
     inline
     float
-    Lexer::get_last_token_value() const
+    Lexer::get_last_token_value() const noexcept
     { return last_token_float; }
 
     template<>
     inline
     std::string
-    Lexer::get_last_token_value() const
+    Lexer::get_last_token_value() const noexcept
     { return last_token_string; }
 
     template<>
     inline
     char
-    Lexer::get_last_token_value() const
+    Lexer::get_last_token_value() const noexcept
     { return static_cast<char>(c); }
+
+    inline
+    int
+    Lexer::get_current_line() const noexcept
+    { return line_number; }
+
+    inline
+    std::string
+    Lexer::get_consumed_line() const noexcept
+    { return consumed_line; }
 }

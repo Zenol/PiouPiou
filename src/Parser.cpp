@@ -5,11 +5,8 @@ namespace PiouC
 {
 
     Parser::Parser(Lexer &lex)
-        :lex(lex), current_tok(Token::Unknown)
-    {
-        //Read the first token
-        get_next_token();
-    }
+        :lex(lex), current_tok(Token::Unknown), first_read(true)
+    {}
 
     Parser::~Parser()
     {}
@@ -277,6 +274,13 @@ namespace PiouC
     PExprAST
     Parser::get_next_expression()
     {
+        if (first_read)
+        {
+            //Read the first token
+            get_next_token();
+            first_read = false;
+        }
+
         while (true)
         {
             //TODO Handle global variable

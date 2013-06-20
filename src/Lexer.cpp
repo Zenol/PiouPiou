@@ -22,9 +22,25 @@ namespace PiouC
         return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
     }
 
+    inline
+    int
+    Lexer::get_char()
+    {
+        int c = iss.get();
+
+        consumed_line.push_back(c);
+
+        if (c == '\n')
+        {
+            consumed_line = "";
+            line_number++;
+        }
+
+        return c;
+    }
 
     Lexer::Lexer(std::istream &iss)
-        :input(""), c(0),
+        :line_number (1), input(""), c(0),
          last_token_string(""),
          last_token_int(0),
          last_token_float(0.0f),
@@ -47,15 +63,15 @@ namespace PiouC
     {
         if (!last_token_string.empty())
             throw LexerException(LexerExceptionType::UnexpectedSymbolAfterLiteral);
-        c = iss.get();
+        c = get_char();
         while (c != '"')
         {
             if (c == '\\')
-                c = iss.get();
+                c = get_char();
             if (iss.gcount() == 0)
                 throw LexerException(LexerExceptionType::UnexpectedEOF);
             last_token_string.push_back(c);
-            c = iss.get();
+            c = get_char();
         }
         return Token::String;
     }
@@ -91,9 +107,9 @@ namespace PiouC
     {
         if (!last_token_string.empty())
             throw LexerException(LexerExceptionType::UnexpectedSymbolAfterLiteral);
-        c = iss.get();
+        c = get_char();
         while (c != '\n' && iss.gcount() != 0)
-            c = iss.get();
+            c = get_char();
         return Token::Comment;
     }
 
@@ -112,9 +128,9 @@ namespace PiouC
     Lexer::get_token()
     {
         //Remove first blanks
-        c = iss.get();
+        c = get_char();
         while (is_blank(c))
-            c = iss.get();
+            c = get_char();
 
         last_token_string = "";
         last_token_int    = 0;
@@ -230,7 +246,7 @@ namespace PiouC
             default:
                 throw LexerException(LexerExceptionType::InvalidCharacter);
             }
-            c = iss.get();
+            c = get_char();
         }
 
         return Token::Unknown;
