@@ -52,3 +52,8 @@ link_directories( ${LLVM_LIBRARY_DIRS} )
 llvm_map_components_to_libraries(REQ_LLVM_LIBRARIES all)
 
 target_link_libraries(piouc ${REQ_LLVM_LIBRARIES})
+
+#Add install targets
+install (TARGETS piouc DESTINATION bin)
+install (FILES "bin/PiouPiouConfig.h"
+         DESTINATION include)
