@@ -69,7 +69,7 @@ add_executable (piouc ${SOURCE_FILES})
 ##                             LIBRARIES LINK                                 ##
 ################################################################################
 
-target_link_libraries (piouc
+set (REQ_LLVM_LIBRARIES
 
     ${PLATFORM_LIBS}
 
@@ -99,6 +99,7 @@ target_link_libraries (piouc
     LLVMCore
     LLVMSupport
 )
+target_link_libraries (piouc ${REQ_LLVM_LIBRARIES})
 
 ################################################################################
 ##                                 INSTALL                                    ##
@@ -123,12 +124,12 @@ file(GLOB_RECURSE UNWANTED_FILES src/Compiler.cpp SRC)
 list (REMOVE_ITEM TEST_SRC ${UNWANTED_FILES})
 
 set (ILLFORMED_LEXER_DIR "tests/illformed_lexer")
-#add_executable (illformed_lexer_test "${ILLFORMED_LEXER_DIR}/test.cpp" ${TEST_SRC} )
-#target_link_libraries(illformed_lexer ${REQ_LLVM_LIBRARIES})
+add_executable (illformed_lexer_test "${ILLFORMED_LEXER_DIR}/test.cpp" ${TEST_SRC} )
+target_link_libraries(illformed_lexer_test ${REQ_LLVM_LIBRARIES})
 
 set (ILLFORMED_PARSER_DIR "tests/illformed_parser")
-#add_executable (illformed_parser_test "${ILLFORMED_PARSER_DIR}/test.cpp" ${TEST_SRC} )
-#target_link_libraries(illformed_parser ${REQ_LLVM_LIBRARIES})
+add_executable (illformed_parser_test "${ILLFORMED_PARSER_DIR}/test.cpp" ${TEST_SRC} )
+target_link_libraries(illformed_parser_test ${REQ_LLVM_LIBRARIES})
 
 #Run tests
 add_test (NAME RunIllformedLexerTest WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${ILLFORMED_LEXER_DIR}" COMMAND "illformed_lexer_test")
