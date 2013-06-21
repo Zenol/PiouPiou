@@ -60,7 +60,6 @@ namespace PiouC
         FloatingExprAST(float value)
             :value(value)
         {}
-    private:
         float value;
     };
 
@@ -71,7 +70,6 @@ namespace PiouC
         IntegerExprAST(int value)
             :value(value)
         {}
-    private:
         int value;
     };
 
@@ -82,7 +80,6 @@ namespace PiouC
         StringExprAST(const std::string &value)
             :value(value)
         {}
-    private:
         std::string value;
     };
 
@@ -131,7 +128,6 @@ namespace PiouC
         BinaryExprAST(Token op, PExprAST left, PExprAST right)
             :op(op), left(left), right(right)
         {}
-    private:
         Token op;
         PExprAST left;
         PExprAST right;
@@ -189,7 +185,7 @@ namespace PiouC
         ExternAST(std::string extern_name, PPrototypeAST prototype)
             :extern_name(extern_name), prototype(prototype)
         {}
-    private:
+
         std::string extern_name;
         PPrototypeAST prototype;
     };
@@ -209,7 +205,6 @@ namespace PiouC
         FunctionAST(PPrototypeAST prototype, InstList imp)
             :prototype(prototype), imp(imp)
         {}
-    private:
         PPrototypeAST prototype;
         InstList imp;
     };

@@ -38,7 +38,6 @@ namespace PiouC
         PValue codegen(ExternAST *expr);
         PValue codegen(FunctionAST *expr);
 
-
     private:
         llvm::LLVMContext &context;
         llvm::Module *module;

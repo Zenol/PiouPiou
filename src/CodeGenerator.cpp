@@ -1,5 +1,7 @@
 #include "CodeGenerator.hpp"
 
+#include "AST.hpp"
+
 namespace PiouC
 {
 
@@ -15,7 +17,10 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(FloatingExprAST *expr)
     {
-        return PValue(0);
+        llvm::Value *llvm_value = llvm::ConstantFP::get(context,
+                                                        llvm::APFloat(expr->value));
+        llvm_value->dump();
+        return PValue(llvm_value);
     }
 
     PValue
@@ -27,6 +32,7 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(StringExprAST *expr)
     {
+        std::cout << "String";
         return PValue(0);
     }
 
@@ -45,6 +51,8 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(BinaryExprAST *expr)
     {
+        expr->left->accept(*this);
+        expr->right->accept(*this);
         return PValue(0);
     }
 
@@ -69,6 +77,10 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(FunctionAST *expr)
     {
+        for (auto inst : expr->imp)
+        {
+        return inst->accept(*this);
+        }
         return PValue(0);
     }
 }
