@@ -11,6 +11,10 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -ggdb -W -Wall")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -ggdb -W -Wall")
 cmake_minimum_required (VERSION 2.6)
 
+################################################################################
+##                                  PROJECT                                   ##
+################################################################################
+
 # Project name.
 project (PiouPiou)
 
@@ -37,6 +41,10 @@ file(GLOB_RECURSE SOURCE_FILES src/*.cpp SRC)
 # Add executable :
 add_executable (piouc ${SOURCE_FILES})
 
+################################################################################
+##                                LIBRARIES                                   ##
+################################################################################
+
 # Add libraries
 set (CMAKE_PREFIX_PATH "/usr/lib/llvm")
 set (LLVM_ROOT "/usr/lib/llvm")
@@ -46,14 +54,37 @@ if( NOT LLVM_FOUND )
   message(FATAL_ERROR "LLVM package can't be found. Set CMAKE_PREFIX_PATH variable to LLVM's installation prefix.")
 endif()
 
-include_directories( ${LLVM_INCLUDE_DIRS} )
+include_directories( ${LLVM_INCLUDE_DIRS} "src/" )
 link_directories( ${LLVM_LIBRARY_DIRS} )
 
 llvm_map_components_to_libraries(REQ_LLVM_LIBRARIES all)
 
 target_link_libraries(piouc ${REQ_LLVM_LIBRARIES})
 
+################################################################################
+##                                 INSTALL                                    ##
+################################################################################
+
 #Add install targets
 install (TARGETS piouc DESTINATION bin)
 install (FILES "bin/PiouPiouConfig.h"
          DESTINATION include)
+
+
+################################################################################
+##                                  TESTS                                     ##
+################################################################################
+
+#Enable tests
+enable_testing()
+
+#Compile tests
+set (TEST_SRC ${SOURCE_FILES})
+file(GLOB_RECURSE UNWANTED_FILES src/Compiler.cpp SRC)
+list (REMOVE_ITEM TEST_SRC ${UNWANTED_FILES})
+
+set (ILLFORMED_DIR "tests/illformed")
+add_executable (illformed_test "${ILLFORMED_DIR}/test.cpp" ${TEST_SRC} )
+
+#Run tests
+add_test (NAME RunIllformedTest WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${ILLFORMED_DIR}" COMMAND "illformed_test")
