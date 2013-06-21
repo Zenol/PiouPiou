@@ -6,8 +6,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
+
 class TestMessage : public virtual std::exception
 {
 public:
@@ -25,6 +24,63 @@ private:
 };
 
 using namespace PiouC;
+
+void run_unexpected_symbol_literal()
+{
+    try
+    {
+        std::ifstream file("./unexpected_symbol_after_literal.piou");
+
+        if (!file)
+            throw TestMessage("Can't open test file");
+        Lexer lex(std::cin);
+        Parser parser(lex);
+    }
+    catch(LexerException &e)
+    {
+        if (e.get_type() == LexerExceptionType::UnexpectedSymbolAfterLiteral)
+            return;
+        throw e;
+    }
+}
+
+void run_unexpected_symbol_number()
+{
+    try
+    {
+        std::ifstream file("./unexpected_symbol_after_number.piou");
+
+        if (!file)
+            throw TestMessage("Can't open test file");
+        Lexer lex(std::cin);
+        Parser parser(lex);
+    }
+    catch(LexerException &e)
+    {
+        if (e.get_type() == LexerExceptionType::UnexpectedSymbolAfterNumber)
+            return;
+        throw e;
+    }
+}
+
+void run_unexpected_eof()
+{
+    try
+    {
+        std::ifstream file("./unexpected_eof.piou");
+
+        if (!file)
+            throw TestMessage("Can't open test file");
+        Lexer lex(std::cin);
+        Parser parser(lex);
+    }
+    catch(LexerException &e)
+    {
+        if (e.get_type() == LexerExceptionType::UnexpectedEOF)
+            return;
+        throw e;
+    }
+}
 
 void run_invalid_character()
 {
@@ -105,19 +161,13 @@ bool run(const char* name, void (*fct) ())
 
 int main(int ac, char *av[])
 {
-char cCurrentPath[FILENAME_MAX];
-
- if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
-     {
-     return errno;
-     }
-
-cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
-
-printf ("The current working directory is %s", cCurrentPath);
     bool success = true;
-    std::cout <<av[0] << std::endl;
+
     success &= run("Check lexer  : Invalid Character", run_invalid_character);
+    success &= run("Check lexer  : Unexpected end of file", run_unexpected_eof);
+    success &= run("Check lexer  : Unexpected symbol after literal", run_unexpected_symbol_literal);
+    success &= run("Check lexer  : Unexpected symbol after number", run_unexpected_symbol_literal);
+
     success &= run("Check parser : Missing Type", run_missing_type);
 
     if (success)
