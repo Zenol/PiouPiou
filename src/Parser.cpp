@@ -206,6 +206,9 @@ namespace PiouC
         std::string extern_name = lex.get_last_token_value<std::string>();
         get_next_token(); // eat string
 
+        if (!is_type(current_tok))
+            throw ParserException(ParserExceptionType::ExpectedType);
+
         //Read prototype
         PPrototypeAST prototype = parse_prototype();
 
@@ -220,6 +223,9 @@ namespace PiouC
     Parser::parse_function()
     {
         get_next_token(); // eat the Define token
+
+        if (!is_type(current_tok))
+            throw ParserException(ParserExceptionType::ExpectedType);
 
         PPrototypeAST prototype = parse_prototype();
 

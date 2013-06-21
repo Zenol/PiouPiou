@@ -33,8 +33,10 @@ void run_unexpected_symbol_literal()
 
         if (!file)
             throw TestMessage("Can't open test file");
-        Lexer lex(std::cin);
+        Lexer lex(file);
         Parser parser(lex);
+        while (parser.get_next_expression())
+        {};
     }
     catch(LexerException &e)
     {
@@ -42,6 +44,7 @@ void run_unexpected_symbol_literal()
             return;
         throw e;
     }
+    throw TestMessage("Illformed file accepted");
 }
 
 void run_unexpected_symbol_number()
@@ -52,8 +55,9 @@ void run_unexpected_symbol_number()
 
         if (!file)
             throw TestMessage("Can't open test file");
-        Lexer lex(std::cin);
+        Lexer lex(file);
         Parser parser(lex);
+        while (parser.get_next_expression());
     }
     catch(LexerException &e)
     {
@@ -61,6 +65,7 @@ void run_unexpected_symbol_number()
             return;
         throw e;
     }
+    throw TestMessage("Illformed file accepted");
 }
 
 void run_unexpected_eof()
@@ -71,8 +76,9 @@ void run_unexpected_eof()
 
         if (!file)
             throw TestMessage("Can't open test file");
-        Lexer lex(std::cin);
+        Lexer lex(file);
         Parser parser(lex);
+        while (parser.get_next_expression());
     }
     catch(LexerException &e)
     {
@@ -80,6 +86,7 @@ void run_unexpected_eof()
             return;
         throw e;
     }
+    throw TestMessage("Illformed file accepted");
 }
 
 void run_invalid_character()
@@ -90,8 +97,10 @@ void run_invalid_character()
 
         if (!file)
             throw TestMessage("Can't open test file");
-        Lexer lex(std::cin);
+        Lexer lex(file);
         Parser parser(lex);
+        PExprAST expr;
+        while (parser.get_next_expression());
     }
     catch(LexerException &e)
     {
@@ -99,6 +108,7 @@ void run_invalid_character()
             return;
         throw e;
     }
+    throw TestMessage("Illformed file accepted");
 }
 
 bool run(const char* name, void (*fct) ())
