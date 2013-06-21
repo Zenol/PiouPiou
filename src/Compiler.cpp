@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 {
     Lexer lex(std::cin);
     Parser parser(lex);
+    CodeGenerator codegen;
 
     try
     {
@@ -60,6 +61,8 @@ int main(int argc, char *argv[])
         {
             std::cout << "Expression :" << std::endl;
             lexer_state(lex);
+            if (expr)
+                expr->accept(codegen);
         }
     }
     catch (LexerException &e)

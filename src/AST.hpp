@@ -8,6 +8,13 @@
 
 #include "Token.hpp"
 
+#include "CodeGenerator.hpp"
+
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <iostream>
 namespace PiouC
 {
 
@@ -18,14 +25,36 @@ namespace PiouC
     {
     public:
         virtual ~ExprAST() = 0;
+        virtual
+        PValue
+        accept(CodeGenerator &codegen)
+        {std::cout << "plouf"; return PValue(0);}
     };
 
     typedef std::shared_ptr<ExprAST> PExprAST;
 
 ///////////////////////
+// Visitable pattern //
+///////////////////////
+
+    template <class Derived>
+    class VisitableAST : public virtual ExprAST
+    {
+    public:
+        virtual ~VisitableAST() {}
+        virtual PValue
+        accept(CodeGenerator &codegen)
+        {
+            return codegen.codegen(dynamic_cast<Derived*>(this));
+        }
+    };
+
+
+///////////////////////
 // Node for literals //
 ///////////////////////
-    class FloatingExprAST : public ExprAST
+    class FloatingExprAST : public virtual ExprAST,
+                            public VisitableAST<FloatingExprAST>
     {
     public:
         FloatingExprAST(float value)
@@ -35,7 +64,8 @@ namespace PiouC
         float value;
     };
 
-    class IntegerExprAST : public ExprAST
+    class IntegerExprAST : public virtual ExprAST,
+                           public VisitableAST<IntegerExprAST>
     {
     public:
         IntegerExprAST(int value)
@@ -45,7 +75,8 @@ namespace PiouC
         int value;
     };
 
-    class StringExprAST : public ExprAST
+    class StringExprAST : public virtual ExprAST,
+                          public VisitableAST<StringExprAST>
     {
     public:
         StringExprAST(const std::string &value)
@@ -66,7 +97,8 @@ namespace PiouC
         Integer,
     };
 
-    class VariableExprAST : public ExprAST
+    class VariableExprAST : public virtual ExprAST,
+                            public VisitableAST<VariableExprAST>
     {
     public:
         VariableExprAST(const std::string &name)
@@ -76,7 +108,8 @@ namespace PiouC
         std::string name;
     };
 
-    class VariableDeclExprAST : public ExprAST
+    class VariableDeclExprAST : public virtual ExprAST,
+                                public VisitableAST<VariableDeclExprAST>
     {
     public:
         VariableDeclExprAST(const std::string &name, Type type)
@@ -91,7 +124,8 @@ namespace PiouC
     // Binary operation //
     //////////////////////
 
-    class BinaryExprAST : public ExprAST
+    class BinaryExprAST : public virtual ExprAST,
+                          public VisitableAST<BinaryExprAST>
     {
     public:
         BinaryExprAST(Token op, PExprAST left, PExprAST right)
@@ -107,7 +141,8 @@ namespace PiouC
     // Call of a function //
     ////////////////////////
 
-    class CallExprAST : public ExprAST
+    class CallExprAST : public virtual ExprAST,
+                        public VisitableAST<CallExprAST>
     {
     public:
         CallExprAST(const std::string &name, const std::vector< PExprAST > &args)
@@ -125,7 +160,8 @@ namespace PiouC
     typedef std::pair<Type, std::string> ArgPair;
     typedef std::vector< ArgPair > ArgList;
 
-    class PrototypeAST : public ExprAST
+    class PrototypeAST : public virtual ExprAST,
+                         public VisitableAST<PrototypeAST>
     {
     public:
         PrototypeAST(Type return_type,
@@ -146,7 +182,8 @@ namespace PiouC
     // An extern declaration //
     ///////////////////////////
 
-    class ExternAST : public ExprAST
+    class ExternAST : public virtual ExprAST,
+                      public VisitableAST<ExternAST>
     {
     public:
         ExternAST(std::string extern_name, PPrototypeAST prototype)
@@ -165,7 +202,8 @@ namespace PiouC
 
     typedef std::list<PExprAST> InstList;
 
-    class FunctionAST : public ExprAST
+    class FunctionAST : public virtual ExprAST,
+                        public VisitableAST<FunctionAST>
     {
     public:
         FunctionAST(PPrototypeAST prototype, InstList imp)
@@ -175,7 +213,6 @@ namespace PiouC
         PPrototypeAST prototype;
         InstList imp;
     };
-
 
 }
 
