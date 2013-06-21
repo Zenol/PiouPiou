@@ -6,6 +6,7 @@
 #include "Parser.hpp"
 #include "ParserException.hpp"
 #include "AST.hpp"
+#include "CodeGenerator.hpp"
 
 using namespace PiouC;
 

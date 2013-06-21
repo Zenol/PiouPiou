@@ -6,6 +6,8 @@
 #include <list>
 #include <memory>
 
+#include "Token.hpp"
+
 namespace PiouC
 {
 
