@@ -46,6 +46,48 @@ void run_missing_type()
     throw TestMessage("Illformed file accepted");
 }
 
+void run_expected_parenthesis()
+{
+    try
+    {
+        std::ifstream file("./expected_parenthesis.piou");
+
+        if (!file)
+            throw TestMessage("Can't open test file");
+        Lexer lex(file);
+        Parser parser(lex);
+        while (parser.get_next_expression());
+    }
+    catch(ParserException &e)
+    {
+        if (e.get_type() == ParserExceptionType::ExpectedEndOfParenth)
+            return;
+        throw e;
+    }
+    throw TestMessage("Illformed file accepted");
+}
+
+void run_expected_content()
+{
+    try
+    {
+        std::ifstream file("./expected_content.piou");
+
+        if (!file)
+            throw TestMessage("Can't open test file");
+        Lexer lex(file);
+        Parser parser(lex);
+        while (parser.get_next_expression());
+    }
+    catch(ParserException &e)
+    {
+        if (e.get_type() == ParserExceptionType::ExpectedStartContent)
+            return;
+        throw e;
+    }
+    throw TestMessage("Illformed file accepted");
+}
+
 void run_expected_end_of_arg()
 {
     try
@@ -134,7 +176,8 @@ int main(int ac, char *av[])
     success &= run("Check parser : Expected type (while reading proto args)", run_missing_type);
     success &= run("Check parser : Expected end of arg", run_expected_end_of_arg);
     success &= run("Check parser : Expected start arg", run_expected_start_arg);
-
+    success &= run("Check parser : Expected end of parenthesis", run_expected_parenthesis);
+    success &= run("Check parser : Expected start of content", run_expected_content);
     if (success)
         return EXIT_SUCCESS;
     return EXIT_FAILURE;
