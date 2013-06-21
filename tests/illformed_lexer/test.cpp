@@ -101,25 +101,6 @@ void run_invalid_character()
     }
 }
 
-void run_missing_type()
-{
-    try
-    {
-        std::ifstream file("./missing_type.piou");
-
-        if (!file)
-            throw TestMessage("Can't open test file");
-        Lexer lex(std::cin);
-        Parser parser(lex);
-    }
-    catch(ParserException &e)
-    {
-        if (e.get_type() == ParserExceptionType::ExpectedType)
-            return;
-        throw e;
-    }
-}
-
 bool run(const char* name, void (*fct) ())
 {
     std::string message;
@@ -167,8 +148,6 @@ int main(int ac, char *av[])
     success &= run("Check lexer  : Unexpected end of file", run_unexpected_eof);
     success &= run("Check lexer  : Unexpected symbol after literal", run_unexpected_symbol_literal);
     success &= run("Check lexer  : Unexpected symbol after number", run_unexpected_symbol_literal);
-
-    success &= run("Check parser : Missing Type", run_missing_type);
 
     if (success)
         return EXIT_SUCCESS;

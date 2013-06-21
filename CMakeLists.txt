@@ -83,8 +83,8 @@ set (TEST_SRC ${SOURCE_FILES})
 file(GLOB_RECURSE UNWANTED_FILES src/Compiler.cpp SRC)
 list (REMOVE_ITEM TEST_SRC ${UNWANTED_FILES})
 
-set (ILLFORMED_DIR "tests/illformed")
-add_executable (illformed_test "${ILLFORMED_DIR}/test.cpp" ${TEST_SRC} )
+set (ILLFORMED_LEXER_DIR "tests/illformed_lexer")
+add_executable (illformed_lexer_test "${ILLFORMED_LEXER_DIR}/test.cpp" ${TEST_SRC} )
 
 #Run tests
-add_test (NAME RunIllformedTest WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${ILLFORMED_DIR}" COMMAND "illformed_test")
+add_test (NAME RunIllformedLexerTest WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${ILLFORMED_LEXER_DIR}" COMMAND "illformed_lexer_test")
