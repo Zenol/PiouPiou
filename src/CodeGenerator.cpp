@@ -15,14 +15,12 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(FloatingExprAST *expr)
     {
-        std::cout << "Floating" << std::endl;
         return PValue(0);
     }
 
     PValue
     CodeGenerator::codegen(IntegerExprAST *expr)
     {
-        std::cout << "Integer" << std::endl;
         return PValue(0);
     }
 
