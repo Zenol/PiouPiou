@@ -86,5 +86,10 @@ list (REMOVE_ITEM TEST_SRC ${UNWANTED_FILES})
 set (ILLFORMED_LEXER_DIR "tests/illformed_lexer")
 add_executable (illformed_lexer_test "${ILLFORMED_LEXER_DIR}/test.cpp" ${TEST_SRC} )
 
+set (ILLFORMED_PARSER_DIR "tests/illformed_parser")
+add_executable (illformed_parser_test "${ILLFORMED_PARSER_DIR}/test.cpp" ${TEST_SRC} )
+
 #Run tests
 add_test (NAME RunIllformedLexerTest WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${ILLFORMED_LEXER_DIR}" COMMAND "illformed_lexer_test")
+
+add_test (NAME RunIllformedParserTest WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${ILLFORMED_PARSER_DIR}" COMMAND "illformed_parser_test")
