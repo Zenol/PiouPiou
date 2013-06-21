@@ -5,7 +5,7 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "cmake/Modules/")
 set(LLVM_DIR "cmake/Modules/")
 
 # C++ 2011 flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -ggdb -W -Wall -v")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -ggdb -W -Wall")
 
 #C 99 flag
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -ggdb -W -Wall")
