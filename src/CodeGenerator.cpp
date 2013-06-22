@@ -17,21 +17,29 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(FloatingExprAST *expr)
     {
-        llvm::Value *llvm_value = llvm::ConstantFP::get(context,
-                                                        llvm::APFloat(expr->value));
-        llvm_value->dump();
+        //Build a 64 bits floating number (a double)
+        using namespace llvm;
+        auto llvm_value = ConstantFP::get(context,
+                                          APFloat(expr->value));
         return PValue(llvm_value);
     }
 
     PValue
     CodeGenerator::codegen(IntegerExprAST *expr)
     {
-        return PValue(0);
+        //Build a 64 bits signet int
+        using namespace llvm;
+        auto llvm_value = ConstantInt::get(context,
+                                           APInt(64, expr->value, true));
+        return PValue(llvm_value);
     }
 
     PValue
     CodeGenerator::codegen(StringExprAST *expr)
     {
+        //Compute a llvm u8 array
+//        auto array_type = llvm::ArrayType::get(Type *ElementType,
+//                                               expr->value.size() + 1);
         std::cout << "String";
         return PValue(0);
     }

@@ -22,7 +22,7 @@ namespace PiouC
     PExprAST
     Parser::parse_floating_expr() noexcept
     {
-        PExprAST node = PExprAST(new FloatingExprAST(lex.get_last_token_value<float>()));
+        PExprAST node = PExprAST(new FloatingExprAST(lex.get_last_token_value<double>()));
         get_next_token(); // eat float
         return node;
     }

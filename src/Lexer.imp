@@ -10,7 +10,7 @@ namespace PiouC
 
     template<>
     inline
-    float
+    double
     Lexer::get_last_token_value() const noexcept
     { return last_token_float; }
 

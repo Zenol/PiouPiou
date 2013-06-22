@@ -57,10 +57,10 @@ namespace PiouC
                             public VisitableAST<FloatingExprAST>
     {
     public:
-        FloatingExprAST(float value)
+        FloatingExprAST(double value)
             :value(value)
         {}
-        float value;
+        double value;
     };
 
     class IntegerExprAST : public virtual ExprAST,

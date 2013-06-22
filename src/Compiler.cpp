@@ -32,7 +32,7 @@ void lexer_state(const Lexer &lex) noexcept
               << ", integer value: "
               << lex.get_last_token_value<int>()
               << ", floating value: "
-              << lex.get_last_token_value<float>()
+              << lex.get_last_token_value<double>()
               << ">"
               << std::endl;
     std::cout << "The last character read was "

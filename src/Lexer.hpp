@@ -33,7 +33,7 @@ namespace PiouC
         int         c;
         std::string last_token_string;
         int         last_token_int;
-        float       last_token_float;
+        double      last_token_float;
 
         std::istream &iss;
 
