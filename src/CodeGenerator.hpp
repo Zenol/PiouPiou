@@ -39,8 +39,13 @@ namespace PiouC
         PValue codegen(FunctionAST *expr);
 
     private:
+        typedef std::map<std::string, PValue> NamedValues;
+
         llvm::LLVMContext &context;
         llvm::Module *module;
+        bool local_scope;
+        NamedValues values_local;
+        NamedValues values_global;
     };
 }
 

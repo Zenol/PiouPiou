@@ -101,7 +101,6 @@ namespace PiouC
         VariableExprAST(const std::string &name)
             :name(name)
         {}
-    private:
         std::string name;
     };
 
@@ -112,7 +111,6 @@ namespace PiouC
         VariableDeclExprAST(const std::string &name, Type type)
             :name(name), type(type)
         {}
-    private:
         std::string name;
         Type type;
     };
