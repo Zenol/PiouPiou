@@ -332,7 +332,7 @@ namespace PiouC
         case Token::IntegerType:
             return Type::Integer;
         default:
-            throw ParserException(ParserExceptionType::UnknowType);
+            throw ParserException(ParserExceptionType::Unknown);
         }
     }
 }

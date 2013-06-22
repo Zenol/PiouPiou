@@ -1,5 +1,5 @@
 #ifndef PARSER_EXCEPTION_HPP_
-# define PARSER_EXCEPTION_HPP_
+#define PARSER_EXCEPTION_HPP_
 
 #include "Exception.hpp"
 
@@ -17,7 +17,7 @@ namespace PiouC
         ExpectedStartContent,
         ExpectedTopLevel,
         ExpectedExternName,
-        UnknowType,
+        Unknown,
     };
 
     class ParserException : public virtual Exception

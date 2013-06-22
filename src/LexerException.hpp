@@ -1,5 +1,5 @@
 #ifndef LEXER_EXCEPTION_HPP_
-# define LEXER_EXCEPTION_HPP_
+#define LEXER_EXCEPTION_HPP_
 
 #include "Exception.hpp"
 

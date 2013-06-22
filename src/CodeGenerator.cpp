@@ -1,4 +1,5 @@
 #include "CodeGenerator.hpp"
+#include "CodeGeneratorException.hpp"
 
 #include "AST.hpp"
 
@@ -99,8 +100,14 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(BinaryExprAST *expr)
     {
-        expr->left->accept(*this);
-        expr->right->accept(*this);
+        PValue left = expr->left->accept(*this);
+        PValue right = expr->right->accept(*this);
+
+        switch (expr->op)
+        {
+        default:
+            throw CGException(CGExceptionType::UnknownBinaryOperator);
+        }
         return PValue(0);
     }
 
