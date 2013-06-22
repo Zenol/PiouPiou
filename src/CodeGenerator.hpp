@@ -43,9 +43,12 @@ namespace PiouC
 
         llvm::LLVMContext &context;
         llvm::Module *module;
+        llvm::IRBuilder<> builder;
         bool local_scope;
         NamedValues values_local;
         NamedValues values_global;
+
+        NamedValues &get_scoped_values();
     };
 }
 

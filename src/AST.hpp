@@ -103,6 +103,7 @@ namespace PiouC
         {}
         std::string name;
     };
+    typedef std::shared_ptr<VariableExprAST> PVariableExprAST;
 
     class VariableDeclExprAST : public virtual ExprAST,
                                 public VisitableAST<VariableDeclExprAST>

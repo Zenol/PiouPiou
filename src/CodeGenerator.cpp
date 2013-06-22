@@ -6,9 +6,16 @@
 namespace PiouC
 {
 
+    CodeGenerator::NamedValues&
+    CodeGenerator::get_scoped_values()
+    {
+        return (local_scope) ? values_local : values_global;
+    }
+
     CodeGenerator::CodeGenerator()
         :context(llvm::getGlobalContext()),
          module(new llvm::Module("JIT", context)),
+         builder(context),
          local_scope(false)
     {
     }
@@ -84,7 +91,7 @@ namespace PiouC
         case Type::Integer:
             value = ConstantInt::get(context, APInt(64, 0, true));
         }
-        NamedValues &scope = (local_scope) ? values_local : values_global;
+        NamedValues &scope = get_scoped_values();
 
         if (scope[expr->name])
             std::cerr << "Warning: "
@@ -100,11 +107,38 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(BinaryExprAST *expr)
     {
+        using namespace llvm;
         PValue left = expr->left->accept(*this);
         PValue right = expr->right->accept(*this);
 
+        if (left->getType()->isDoubleTy() && right->getType()->isIntegerTy(64))
+        {
+            //TODO Should convert right to double
+        }
+
+        if (left->getType()->isIntegerTy(64) && right->getType()->isDoubleTy())
+        {
+            //TODO Should convert right to double
+        }
+
         switch (expr->op)
         {
+        case Token::Affect:
+        {
+            NamedValues &scope = get_scoped_values();
+            auto var = std::dynamic_pointer_cast<VariableExprAST>(expr->left);
+            if (!var)
+                throw CGException(CGExceptionType::ExpectedVariable);
+            scope[var->name] = right;
+            return right;
+        }
+        case Token::Plus:
+        case Token::Minus:
+        case Token::Mult:
+        case Token::Div:
+        case Token::Lt:
+        case Token::Gt:
+        case Token::Equal:
         default:
             throw CGException(CGExceptionType::UnknownBinaryOperator);
         }
