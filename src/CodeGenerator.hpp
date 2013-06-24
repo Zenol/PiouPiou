@@ -40,6 +40,7 @@ namespace PiouC
 
     private:
         typedef std::map<std::string, PValue> NamedValues;
+        typedef std::shared_ptr<llvm::Function*> PFunction;
 
         llvm::LLVMContext &context;
         llvm::Module *module;
@@ -47,6 +48,7 @@ namespace PiouC
         bool local_scope;
         NamedValues values_local;
         NamedValues values_global;
+        PFunction current_function;
 
         NamedValues &get_scoped_values();
     };
