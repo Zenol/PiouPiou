@@ -6,7 +6,7 @@
 namespace PiouC
 {
 
-    CodeGenerator::NamedValues&
+    CodeGenerator::NamedVariables&
     CodeGenerator::get_scoped_values()
     {
         return (local_scope) ? values_local : values_global;
@@ -91,7 +91,7 @@ namespace PiouC
         case Type::Integer:
             value = ConstantInt::get(context, APInt(64, 0, true));
         }
-        NamedValues &scope = get_scoped_values();
+        NamedVariables &scope = get_scoped_values();
 
         if (scope[expr->name])
             std::cerr << "Warning: "
@@ -125,12 +125,9 @@ namespace PiouC
         {
         case Token::Affect:
         {
-            NamedValues &scope = get_scoped_values();
-            auto var = std::dynamic_pointer_cast<VariableExprAST>(expr->left);
-            if (!var)
-                throw CGException(CGExceptionType::ExpectedVariable);
-            scope[var->name] = right;
-            return right;
+            NamedVariables &scope = get_scoped_values();
+            //TODO
+            return PValue(nullptr);
         }
         case Token::Plus:
         case Token::Minus:
@@ -171,5 +168,28 @@ namespace PiouC
         return inst->accept(*this);
         }
         return PValue(0);
+    }
+
+    PAllocaInst
+    CodeGenerator::create_entry_block_alloca(std::string name, Type type)
+    {
+        using llvm::IRBuilder;
+        using llvm::AllocaInst;
+        typedef llvm::Type lType;
+        auto &entry_block = current_function->getEntryBlock();
+        IRBuilder<> tmp_bldr(&entry_block,
+                                 entry_block.begin());
+
+        AllocaInst *alloca = nullptr;
+        switch(type)
+        {
+        case Type::Floating:
+            alloca = tmp_bldr.CreateAlloca(lType::getDoubleTy(context), 0, name);
+        case Type::String:
+            //TODO
+        case Type::Integer:
+            alloca = tmp_bldr.CreateAlloca(lType::getInt64Ty(context), 0, name);
+        }
+        return PAllocaInst(nullptr);
     }
 }

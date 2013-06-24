@@ -9,6 +9,8 @@
 namespace PiouC
 {
     typedef std::shared_ptr<llvm::Value> PValue;
+    typedef std::shared_ptr<llvm::Function> PFunction;
+    typedef std::shared_ptr<llvm::AllocaInst> PAllocaInst;
 
     class FloatingExprAST;
     class IntegerExprAST;
@@ -20,6 +22,7 @@ namespace PiouC
     class PrototypeAST;
     class ExternAST;
     class FunctionAST;
+    enum class Type;
 
     class CodeGenerator
     {
@@ -39,18 +42,28 @@ namespace PiouC
         PValue codegen(FunctionAST *expr);
 
     private:
-        typedef std::map<std::string, PValue> NamedValues;
-        typedef std::shared_ptr<llvm::Function*> PFunction;
+        typedef std::map<std::string, PValue> NamedVariables;
 
         llvm::LLVMContext &context;
         llvm::Module *module;
         llvm::IRBuilder<> builder;
         bool local_scope;
-        NamedValues values_local;
-        NamedValues values_global;
+        NamedVariables values_local;
+        NamedVariables values_global;
         PFunction current_function;
 
-        NamedValues &get_scoped_values();
+        NamedVariables &get_scoped_values();
+
+        //! \brief Create an \a llvm::AllocaInst
+        //!
+        //! Create an \a llvm::AllocaInst stored int the entry block of
+        //! \a current_function.
+        //!
+        //! \param name Variable name
+        //! \param type Variable type
+        //! \return A null ptr if current_function is null.
+        //!         A \a PAllocaInst otherwise.
+        PAllocaInst create_entry_block_alloca(std::string name, Type type);
     };
 }
 
