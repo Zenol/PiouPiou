@@ -11,6 +11,15 @@ namespace PiouC
         virtual const char *what() const noexcept;
     };
 
+    class UnsupportedFeature : virtual public Exception
+    {
+    public:
+        UnsupportedFeature(const char *string);
+        virtual const char *what() const noexcept;
+    private:
+        const char* string;
+    };
+
 }
 
 #endif /* !EXCEPTION_H_ */

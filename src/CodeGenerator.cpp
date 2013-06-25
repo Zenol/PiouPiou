@@ -1,5 +1,6 @@
 #include "CodeGenerator.hpp"
 #include "CodeGeneratorException.hpp"
+#include "Exception.hpp"
 
 #include "AST.hpp"
 
@@ -72,7 +73,8 @@ namespace PiouC
                       << "' typed as integer."
                       << std::endl;
             //Build a 0 signed int value
-            var = PValue(ConstantInt::get(context, APInt(64, 0, true)));
+            VariableDeclExprAST vdec(expr->name, Type::Integer);
+            var = codegen(&vdec);
         }
         return var;
     }
@@ -81,15 +83,15 @@ namespace PiouC
     CodeGenerator::codegen(VariableDeclExprAST *expr)
     {
         using namespace llvm;
-        Value *value = nullptr;
+        PValue value = PValue(nullptr);
         switch(expr->type)
         {
         case Type::Floating:
-            value = ConstantFP::get(context, APFloat((double)0.0));
+            value = PValue(ConstantFP::get(context, APFloat((double)0.0)));
         case Type::String:
             //TODO
         case Type::Integer:
-            value = ConstantInt::get(context, APInt(64, 0, true));
+            value = PValue(ConstantInt::get(context, APInt(64, 0, true)));
         }
         NamedVariables &scope = get_scoped_values();
 
@@ -97,14 +99,15 @@ namespace PiouC
             std::cerr << "Warning: "
                       << "Redeclaration of the variable '"
                       << expr->name
-                      << "'."
+                      << "'. It's value will be erased."
                       << std::endl;
         else
             scope[expr->name] = create_entry_block_alloca(expr->name, expr->type);
 
-        Value *out_value = builder.CreateStore(value, scope[expr->name].get());
+        PValue out_value = PValue(builder.CreateStore(value.get(),
+                                                      scope[expr->name].get()));
 
-        return PValue(0);
+        return PValue(out_value);
     }
 
     PValue
@@ -150,6 +153,11 @@ namespace PiouC
             return PValue(nullptr);
         }
         case Token::Plus:
+            if (false)
+                return PValue(builder.CreateFAdd(left.get(),
+                                                 right.get(),
+                                                 "tmp_plus"));
+            throw UnsupportedFeature(__FILE__ ": unsupported type for plus");
         case Token::Minus:
         case Token::Mult:
         case Token::Div:

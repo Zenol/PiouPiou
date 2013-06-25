@@ -6,4 +6,13 @@ namespace PiouC
     {
         return "PiouC Exception";
     }
+
+    UnsupportedFeature::UnsupportedFeature(const char* string)
+        :string(string)
+    {}
+
+    const char *UnsupportedFeature::what() const noexcept
+    {
+        return string;
+    }
 }
