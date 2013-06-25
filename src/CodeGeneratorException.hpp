@@ -9,6 +9,8 @@ namespace PiouC
     {
         UnknownBinaryOperator,
         ExpectedVariable,
+        TooFewArguments,
+        TooMuchArguments,
         Unknown,
     };
 

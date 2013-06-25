@@ -273,10 +273,35 @@ namespace PiouC
         return PValue(0);
     }
 
-    PValue
-    CodeGenerator:: codegen(CallExprAST *expr)
+    template <typename T>
+    std::vector<T*>
+    vector_shared_to_vector(std::vector< std::shared_ptr<T> > v)
     {
-        return PValue(0);
+        std::vector<T*> new_vector;
+
+        for (auto e : v)
+            new_vector.push_back(e.get());
+
+        return new_vector;
+    }
+
+    PValue
+    CodeGenerator::codegen(CallExprAST *expr)
+    {
+        PFunction calle = PFunction(module->getFunction(expr->name));
+
+        if (calle->arg_size() < expr->args.size())
+            throw CGExceptionType(CGExceptionType::TooFewArguments);
+        if (calle->arg_size() > expr->args.size())
+            throw CGExceptionType(CGExceptionType::TooMuchArguments);
+
+        std::vector<PValue> values;
+        for (auto arg : expr->args)
+            values.push_back(arg->accept(*this));
+
+        return PValue(builder.CreateCall(calle.get(),
+                                         vector_shared_to_vector(values),
+                                         "tmp_call"));
     }
 
     PValue

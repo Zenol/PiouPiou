@@ -143,7 +143,6 @@ namespace PiouC
         CallExprAST(const std::string &name, const std::vector< PExprAST > &args)
             :name(name), args(args)
         {}
-    private:
         std::string name;
         std::vector<PExprAST> args;
     };

@@ -62,7 +62,11 @@ int main(int argc, char *argv[])
             std::cout << "Expression :" << std::endl;
             lexer_state(lex);
             if (expr)
-                expr->accept(codegen);
+            {
+                PValue value = expr->accept(codegen);
+                if (value)
+                    value->dump();
+            }
         }
     }
     catch (LexerException &e)
