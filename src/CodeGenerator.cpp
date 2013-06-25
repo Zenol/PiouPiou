@@ -36,7 +36,7 @@ namespace PiouC
     PValue
     CodeGenerator::codegen(IntegerExprAST *expr)
     {
-        //Build a 64 bits signet int
+        //Build a 64 bits signed int
         using namespace llvm;
         auto llvm_value = ConstantInt::get(context,
                                            APInt(64, expr->value, true));
@@ -99,7 +99,10 @@ namespace PiouC
                       << expr->name
                       << "'."
                       << std::endl;
-        scope[expr->name] = PValue(value);
+        else
+            scope[expr->name] = create_entry_block_alloca(expr->name, expr->type);
+
+        Value *out_value = builder.CreateStore(value, scope[expr->name].get());
 
         return PValue(0);
     }
@@ -108,25 +111,42 @@ namespace PiouC
     CodeGenerator::codegen(BinaryExprAST *expr)
     {
         using namespace llvm;
+        using llvm::Type;
         PValue left = expr->left->accept(*this);
         PValue right = expr->right->accept(*this);
 
+        //Convert right to double
         if (left->getType()->isDoubleTy() && right->getType()->isIntegerTy(64))
-        {
-            //TODO Should convert right to double
-        }
+            right = PValue(builder.CreateSIToFP(right.get(),
+                                                Type::getDoubleTy(context)));
 
+        //Convert left to double
         if (left->getType()->isIntegerTy(64) && right->getType()->isDoubleTy())
-        {
-            //TODO Should convert right to double
-        }
+            left = PValue(builder.CreateSIToFP(left.get(),
+                                               Type::getDoubleTy(context)));
 
         switch (expr->op)
         {
         case Token::Affect:
         {
+            auto var = std::dynamic_pointer_cast<VariableExprAST>(expr->left);
+            if (!var)
+                throw CGException(CGExceptionType::ExpectedVariable);
             NamedVariables &scope = get_scoped_values();
-            //TODO
+
+            //Convert Double to Int64
+            if (right->getType()->isDoubleTy() &&
+                scope[var->name]->getType()->isIntegerTy(64))
+                right = PValue(builder.CreateFPToSI(right.get(),
+                                                    Type::getInt64Ty(context)));
+
+            //Convert Int64 to Double
+            if (right->getType()->isIntegerTy(64) &&
+                scope[var->name]->getType()->isDoubleTy())
+                right = PValue (builder.CreateSIToFP(right.get(),
+                                                     Type::getDoubleTy(context)));
+
+            builder.CreateStore(right.get(), scope[var->name].get());
             return PValue(nullptr);
         }
         case Token::Plus:
