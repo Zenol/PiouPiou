@@ -6,6 +6,8 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
 
+#include "CodeGeneratorException.hpp"
+
 namespace PiouC
 {
     typedef std::shared_ptr<llvm::Value> PValue;
@@ -22,7 +24,9 @@ namespace PiouC
     class PrototypeAST;
     class ExternAST;
     class FunctionAST;
+
     enum class Type;
+    enum class Token;
 
     class CodeGenerator
     {
@@ -47,11 +51,14 @@ namespace PiouC
         llvm::LLVMContext &context;
         llvm::Module *module;
         llvm::IRBuilder<> builder;
+
         bool local_scope;
         NamedVariables values_local;
         NamedVariables values_global;
+
         PFunction current_function;
 
+        //Return the current symbol list
         NamedVariables &get_scoped_values();
 
         //! \brief Create an \a llvm::AllocaInst
@@ -64,6 +71,16 @@ namespace PiouC
         //! \return A null ptr if current_function is null.
         //!         A \a PAllocaInst otherwise.
         PAllocaInst create_entry_block_alloca(std::string name, Type type);
+
+        //! \brief compute binop operations that return a value from two
+        //!        floating operands.
+        PValue compute_float_binop(const Token op, PValue &left, PValue &right)
+            throw(CGException);
+
+        //! \brief compute binop operations that return a value from two
+        //!        integer operands.
+        PValue compute_int_binop(const Token op, PValue &left, PValue &right)
+            throw (CGException);
     };
 }
 

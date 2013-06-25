@@ -111,6 +111,117 @@ namespace PiouC
     }
 
     PValue
+    CodeGenerator::compute_int_binop(const Token op, PValue &left, PValue &right)
+        throw (CGException)
+    {
+        using llvm::Type;
+        switch(op)
+        {
+        case Token::Plus:
+            return PValue(builder.CreateAdd(left.get(),
+                                            right.get(),
+                                            "tmp_iplus"));
+        case Token::Minus:
+            return PValue(builder.CreateSub(left.get(),
+                                            right.get(),
+                                            "tmp_iminus"));
+        case Token::Mult:
+            return PValue(builder.CreateMul(left.get(),
+                                            right.get(),
+                                            "tmp_fmult"));
+        case Token::Div:
+            return PValue(builder.CreateSDiv(left.get(),
+                                             right.get(),
+                                             "tmp_fdiv"));
+        case Token::Lt:
+        {
+            PValue tmpval =  PValue(builder.CreateICmpSLT(left.get(),
+                                                          right.get(),
+                                                          "tmp_fcmplt"));
+            return PValue(builder.CreateZExt(tmpval.get(),
+                                             Type::getInt64Ty(context),
+                                             "tmp_zext64"));
+        }
+        case Token::Gt:
+        {
+            PValue tmpval =  PValue(builder.CreateICmpSGT(left.get(),
+                                                          right.get(),
+                                                          "tmp_fcmpgt"));
+            return PValue(builder.CreateZExt(tmpval.get(),
+                                             Type::getInt64Ty(context),
+                                             "tmp_zext64"));
+        }
+        case Token::Equal:
+        {
+            PValue tmpval =  PValue(builder.CreateICmpEQ(left.get(),
+                                                         right.get(),
+                                                         "tmp_fcmpeq"));
+            return PValue(builder.CreateZExt(tmpval.get(),
+                                             Type::getInt64Ty(context),
+                                             "tmp_zext64"));
+        }
+        default:
+            throw CGException(CGExceptionType::UnknownBinaryOperator);
+        }
+    }
+
+    PValue
+    CodeGenerator::compute_float_binop(const Token op, PValue &left, PValue &right)
+        throw (CGException)
+    {
+        using llvm::Type;
+        switch(op)
+        {
+        case Token::Plus:
+            return PValue(builder.CreateFAdd(left.get(),
+                                             right.get(),
+                                             "tmp_fplus"));
+        case Token::Minus:
+            return PValue(builder.CreateFSub(left.get(),
+                                             right.get(),
+                                             "tmp_fminus"));
+        case Token::Mult:
+            return PValue(builder.CreateFMul(left.get(),
+                                             right.get(),
+                                             "tmp_fmult"));
+        case Token::Div:
+            return PValue(builder.CreateFDiv(left.get(),
+                                             right.get(),
+                                             "tmp_fdiv"));
+        case Token::Lt:
+        {
+            PValue tmpval =  PValue(builder.CreateFCmpOLT(left.get(),
+                                                          right.get(),
+                                                          "tmp_fcmplt"));
+            return PValue(builder.CreateZExt(tmpval.get(),
+                                             Type::getInt64Ty(context),
+                                             "tmp_zext64"));
+        }
+        case Token::Gt:
+        {
+            PValue tmpval =  PValue(builder.CreateFCmpOGT(left.get(),
+                                                          right.get(),
+                                                          "tmp_fcmpgt"));
+            return PValue(builder.CreateZExt(tmpval.get(),
+                                             Type::getInt64Ty(context),
+                                             "tmp_zext64"));
+        }
+        case Token::Equal:
+        {
+            PValue tmpval =  PValue(builder.CreateFCmpOEQ(left.get(),
+                                                          right.get(),
+                                                          "tmp_fcmpeq"));
+            return PValue(builder.CreateZExt(tmpval.get(),
+                                             Type::getInt64Ty(context),
+                                             "tmp_zext64"));
+        }
+        default:
+            throw CGException(CGExceptionType::UnknownBinaryOperator);
+        }
+        return PValue(nullptr);
+    }
+
+    PValue
     CodeGenerator::codegen(BinaryExprAST *expr)
     {
         using namespace llvm;
@@ -128,9 +239,7 @@ namespace PiouC
             left = PValue(builder.CreateSIToFP(left.get(),
                                                Type::getDoubleTy(context)));
 
-        switch (expr->op)
-        {
-        case Token::Affect:
+        if (expr->op == Token::Affect)
         {
             auto var = std::dynamic_pointer_cast<VariableExprAST>(expr->left);
             if (!var)
@@ -149,24 +258,18 @@ namespace PiouC
                 right = PValue (builder.CreateSIToFP(right.get(),
                                                      Type::getDoubleTy(context)));
 
-            builder.CreateStore(right.get(), scope[var->name].get());
-            return PValue(nullptr);
+            return PValue(builder.CreateStore(right.get(), scope[var->name].get()));
         }
-        case Token::Plus:
-            if (false)
-                return PValue(builder.CreateFAdd(left.get(),
-                                                 right.get(),
-                                                 "tmp_plus"));
-            throw UnsupportedFeature(__FILE__ ": unsupported type for plus");
-        case Token::Minus:
-        case Token::Mult:
-        case Token::Div:
-        case Token::Lt:
-        case Token::Gt:
-        case Token::Equal:
-        default:
-            throw CGException(CGExceptionType::UnknownBinaryOperator);
-        }
+
+        //On floats
+        if (left->getType()->isDoubleTy() && right->getType()->isDoubleTy())
+            return compute_float_binop(expr->op, left, right);
+
+        //On integers
+        if (left->getType()->isIntegerTy(64) && right->getType()->isIntegerTy(64))
+            return compute_int_binop(expr->op, left, right);
+
+        throw UnsupportedFeature(__FILE__ ": unsupported type for plus");
         return PValue(0);
     }
 
